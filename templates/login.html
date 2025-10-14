@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Portal do Contador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">    
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo">
+        <div align="center" id="header_">
+            <h1>Geti Contábil</h1>
+        </div>
+        <div class="spacer"></div>
+    </header>  
+    <div class="login-box">
+        <div id="title">
+        <h2>Acesso ao Portal</h2>
+        </div>
+        <div id="innerbox">
+            {% if error %}
+                <p style="color: red; text-align: center;">{{ error }}</p>
+            {% endif %}            
+            <form method="post">
+                <input type="text" name="username" placeholder="Usuário" required><br><br>
+                <input type="password" name="password" placeholder="Senha" required><br><br>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

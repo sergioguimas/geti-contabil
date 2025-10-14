@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Seus Arquivos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Bem-vindo(a), {{ username }}!</h1>
+        <a href="{{ url_for('logout') }}">Sair</a>
+    </div>
+
+    <div class="container">
+        <h2>Seus arquivos disponíveis:</h2>
+        {% if files %}
+            <ul>
+                {% for file in files %}
+                    <li>
+                        <a href="{{ file.webViewLink }}" target="_blank">{{ file.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhum arquivo encontrado para você.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
