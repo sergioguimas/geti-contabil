@@ -1,3 +1,10 @@
+body {
+    font-family: sans-serif; 
+    margin: 0; 
+    background: #f9f9f9;
+    color: #333;
+}
+
 header {
     display: flex;
     justify-content: space-between;
@@ -6,44 +13,92 @@ header {
     border-bottom: 2px solid #4338ca;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     background-color: #062251;
-    position: relative;
-    min-height: 70px;
     border-radius: 0 0 30px 30px;
+    color: white
 }
 
-#logo {
-    max-height: 80px;
-    padding: 5px;
-    border-radius: 8px;
-    position: relative;
-    z-index: 1;
+#logo{
+    max-height: 70px;
 }
 
-#header_ {
-    color: white;
-    text-align: center;
+#header_ h1 {
+    margin: 0;
+    font-size: 1.5em;
     text-decoration: underline;
 }
 
 #sair {
-    font-size: 16px;
-    position: absolute;
-    right: 30px;
-    top: 20px;
-    z-index: 1;
+    color: white
+    text-decoration: none;
+    background-color: #ff4d4d;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
-body { 
-    font-family: sans-serif; 
-    margin: 0; 
-    background: #f9f9f9; 
+#sair:hover {
+    background-color: #ff1a1a;
 }
 
-.menu {
-    margin: 20px;
+.dashboard-container{
+    display: flex;
+    min-height: calc(100vh - 92px);
+}
+
+.menu-lateral{
+    width: 25%;
+    max-width: 300px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-lateral h3 {
+    color: #062251;
+    border-bottom: 2px solid #f0f2f5;
+    padding-bottom: 10px;
+}
+
+.empresa-select, .menu-lateral button {
+    width: 100%;
     padding: 10px;
-    width: 20%;
-    background: rgb(69, 2, 255);
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+.menu-lateral button {
+    background-color: #4f46e5;
+    color: white;
+    cursor: pointer;
+    border: none;
+    margin-top: 15px;
+}
+.menu-lateral button:hover {
+    background-color: #4338ca;
+}
+
+.info-contador {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.conteudo-principal {
+    flex-grow: 1;
+    padding: 20px 40px;
+}
+
+.arquivos-container {
+    margin-top: 20px;
+    background-color: white;
+    padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }

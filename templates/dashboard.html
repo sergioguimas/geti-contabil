@@ -10,24 +10,46 @@
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo">
         <div class="header_">
             <h1>Bem-vindo(a), {{ username }}!</h1>
-            <a href="{{ url_for('logout') }}" id="sair">Sair</a>
         </div>
+        <a href="{{ url_for('logout') }}" id="sair">Sair</a>
         <div class="spacer"></div>
     </header>
 
-    <div class="container">
+    <div class="dashboard-container">
+        <aside class="menu-lateral">
+            <h3>Empresas</h3>
+            <p>Selecione uma empresa para ver os arquivos.</p>
+            <form action="{{ url_for('dashboard')}}" method="GET">
+                <select name="empresa_id" class="empresa-select">
+                    {% for empresa in empresas %}
+                        <option value="{{ empresa.id }}">
+                            {{ empresa.nome_fantasua or empresa.razao_social }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Ver Arquivos</button>
+            </form>
+            <div class="info-contador">
+                <p>Logado como: <br><strong>{{ username }}</strong></p>
+            </div>
+        </aside>
+
+        <main class="conteudo-principal">
+            <h2>Arquivos da Empresa</h2>
+            <p>Selecione uma empresa no menu lateral para ver os arquivos disponíveis.</p>
+            {% if files %}
+                <ul>
+                    {% for file in files %}
+                        <li>
+                            <a href="{{ file.webViewLink }}" target="_blank">{{ file.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Nenhum arquivo encontrado para você.</p>
+            {% endif %}
+        </main>
         <h2>Seus arquivos disponíveis:</h2>
-        {% if files %}
-            <ul>
-                {% for file in files %}
-                    <li>
-                        <a href="{{ file.webViewLink }}" target="_blank">{{ file.name }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Nenhum arquivo encontrado para você.</p>
-        {% endif %}
     </div>
 </body>
 </html>

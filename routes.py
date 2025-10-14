@@ -57,13 +57,29 @@ def login():
 @app.route("/dashboard")
 def dashboard():
     if 'user_name' in session:
+        db = get_db()
+        # Busca todas as empresas associadas a este contador
+        empresas = db.execute(
+            """
+            SELECT e.id, e.nome_fantasia, e.razao_social
+            FROM empresa e
+            JOIN contador_empresa ce ON e.id = ce.id_empresa
+            WHERE ce.id_contador = ?
+            ORDER BY e.nome_fantasia
+            """,
+            (session['user_id'],)
+        ).fetchall()
+
+        # O nome de usuário para o template
         username = session['user_name']
         
-        #
-        # ** FUTURAMENTE, AQUI ENTRARÁ O CÓDIGO DA API DO GOOGLE DRIVE **
-        #
-
-        return render_template("dashboard.html", username=username, files=None) # files=None por enquanto
+        # Passa a lista de empresas para o template
+        return render_template(
+            "dashboard.html", 
+            username=username, 
+            empresas=empresas, # Nova variável
+            files=None
+        )
 
     return redirect(url_for('login'))
 
