@@ -10,3 +10,40 @@ header{
     min-height: 70px;
     border-radius: 0 0 30px 30px;
 }
+
+#logo {
+    max-height: 80px;
+    padding: 5px;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+#header_ {
+    color: white;
+    text-align: center;
+    text-decoration: underline;
+}
+
+#sair {
+    font-size: 16px;
+    position: absolute;
+    right: 30px;
+    top: 20px;
+    z-index: 1;
+}
+
+body { 
+    font-family: sans-serif; 
+    margin: 0; 
+    background: #f9f9f9; 
+}
+
+.menu{
+    margin: 20px;
+    padding: 10px;
+    width: 20%;
+    background: rgb(69, 2, 255);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
