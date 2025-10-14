@@ -1,0 +1,12 @@
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    border-bottom: 2px solid #4338ca;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    background-color: #062251;
+    position: relative;
+    min-height: 70px;
+    border-radius: 0 0 30px 30px;
+}
