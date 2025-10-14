@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS usuarios;
-
 CREATE TABLE contador(  
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
@@ -37,5 +35,3 @@ CREATE TABLE log(
     acao TEXT NOT NULL,
     descricao TEXT
 );
-
-INSERT INTO usuarios (username, password) VALUES ('cliente_teste', 'senha123');

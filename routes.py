@@ -1,6 +1,7 @@
 import sqlite3
 from app import app
 from flask import render_template, request, redirect, url_for, session, g
+from werkzeug.security import check_password_hash
 
 DATABASE = 'usuarios.db'
 
@@ -21,40 +22,42 @@ def close_connection(exception):
 
 @app.route("/")
 def home():
-    if 'username' in session:
+    if 'user_name' in session:
         return redirect(url_for('dashboard'))
     return redirect(url_for('login'))
 
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    if 'username' in session:
+    if 'user_name' in session:
         return redirect(url_for('dashboard'))
 
     error = None
     if request.method == 'POST':
-        username_form = request.form['username']
+        email_form = request.form['email']
         password_form = request.form['password']
         
         db = get_db()
         user = db.execute(
-            'SELECT * FROM usuarios WHERE username = ?', (username_form,)
+            'SELECT * FROM contador WHERE email = ?', (email_form,)
         ).fetchone()
 
         if user is None:
-            error = 'Usuário incorreto. Tente novamente.'
-        elif user['password'] != password_form:
-            error = 'Senha incorreta. Tente novamente.'
+            error = 'E-mail não encontrado. Tente novamente.'
+        elif not check_password_hash(user['senha_hash'], password_form):
+            error = 'Senha incorreta.'
         else:
             session.clear()
-            session['username'] = user['username']
+            session['user_id'] = user['id']
+            session['user_name'] = user['nome']
             return redirect(url_for('dashboard'))
 
     return render_template("login.html", error=error)
 
 @app.route("/dashboard")
 def dashboard():
-    if 'username' in session:
-        username = session['username']
+    if 'user_name' in session:
+        username = session['user_name']
         
         #
         # ** FUTURAMENTE, AQUI ENTRARÁ O CÓDIGO DA API DO GOOGLE DRIVE **

@@ -1,4 +1,4 @@
-header{
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -39,7 +39,7 @@ body {
     background: #f9f9f9; 
 }
 
-.menu{
+.menu {
     margin: 20px;
     padding: 10px;
     width: 20%;
