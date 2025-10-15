@@ -6,16 +6,14 @@ from werkzeug.security import check_password_hash
 DATABASE = 'usuarios.db'
 
 def get_db():
-    """Abre uma conexão com o banco de dados para a requisição atual."""
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
-        db.row_factory = sqlite3.Row # Para acessar colunas por nome
+        db.row_factory = sqlite3.Row
     return db
 
 @app.teardown_appcontext
 def close_connection(exception):
-    """Fecha a conexão com o banco de dados no final da requisição."""
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
@@ -58,7 +56,6 @@ def login():
 def dashboard():
     if 'user_name' in session:
         db = get_db()
-        # Busca todas as empresas associadas a este contador
         empresas = db.execute(
             """
             SELECT e.id, e.nome_fantasia, e.razao_social
@@ -70,14 +67,12 @@ def dashboard():
             (session['user_id'],)
         ).fetchall()
 
-        # O nome de usuário para o template
         username = session['user_name']
         
-        # Passa a lista de empresas para o template
         return render_template(
             "dashboard.html", 
             username=username, 
-            empresas=empresas, # Nova variável
+            empresas=empresas,
             files=None
         )
 

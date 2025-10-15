@@ -1,7 +1,5 @@
 import sqlite3
 
-# --- DADOS DE EXEMPLO ---
-# Adicione aqui as empresas que você quer criar e associar
 empresas_para_adicionar = [
     {
         "razao_social": "Padaria Pão Quente Ltda.",
@@ -18,9 +16,8 @@ empresas_para_adicionar = [
         "contato": "(11) 98888-2222"
     }
 ]
-# ID do contador que será o "dono" dessas empresas (1 é o ID do adm@adm.com)
+
 id_contador_admin = 1
-# -------------------------
 
 connection = sqlite3.connect('usuarios.db')
 cursor = connection.cursor()
@@ -29,16 +26,13 @@ print("Inserindo e associando empresas...")
 
 for empresa in empresas_para_adicionar:
     try:
-        # Insere a empresa na tabela 'empresa'
         cursor.execute(
             """INSERT INTO empresa (razao_social, cnpj, nome_fantasia, email, contato)
                VALUES (?, ?, ?, ?, ?)""",
             (empresa["razao_social"], empresa["cnpj"], empresa["nome_fantasia"], empresa["email"], empresa["contato"])
         )
-        # Pega o ID da empresa que acabamos de inserir
         id_nova_empresa = cursor.lastrowid
         
-        # Cria a associação na tabela 'contador_empresa'
         cursor.execute(
             "INSERT INTO contador_empresa (id_contador, id_empresa) VALUES (?, ?)",
             (id_contador_admin, id_nova_empresa)
