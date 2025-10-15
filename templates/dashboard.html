@@ -23,7 +23,7 @@
                 <select name="empresa_id" class="empresa-select">
                     {% for empresa in empresas %}
                         <option value="{{ empresa.id }}">
-                            {{ empresa.nome_fantasua or empresa.razao_social }}
+                            {{ empresa.nome_fantasia or empresa.razao_social }}
                         </option>
                     {% endfor %}
                 </select>
@@ -35,9 +35,8 @@
         </aside>
 
         <main class="conteudo-principal">
-            <h2>Arquivos da Empresa</h2>
-            <p>Selecione uma empresa no menu lateral para ver os arquivos disponíveis.</p>
             {% if files %}
+            <h2>Seus arquivos disponíveis:</h2>            
                 <ul>
                     {% for file in files %}
                         <li>
@@ -46,10 +45,11 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>Nenhum arquivo encontrado para você.</p>
+                <h2>Arquivos da Empresa</h2>
+                <p>Nenhum arquivo encontrado no momento.</p>
+                <p>Selecione uma empresa no menu lateral para ver os arquivos disponíveis.</p>            
             {% endif %}
         </main>
-        <h2>Seus arquivos disponíveis:</h2>
     </div>
 </body>
 </html>
