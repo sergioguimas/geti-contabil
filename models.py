@@ -3,6 +3,7 @@ import re
 from email_validator import validate_email, EmailNotValidError
 import json
 import datetime
+from werkzeug.security import generate_password_hash
 
 DATABASE = "usuarios.db"
 
@@ -55,8 +56,9 @@ def cadastro_contador(NOME, EMAIL, SENHA):
             print("Email já cadastrado no sistema!")
         else:
             if valida_email(EMAIL) == True:
+                senha_hash = generate_password_hash(SENHA)
                 SQL_INSERT = "INSERT INTO contador (nome, email, senha_hash) VALUES(?, ?, ?);"
-                VALUES = (NOME, EMAIL, SENHA)
+                VALUES = (NOME, EMAIL, senha_hash)
                 SQL.execute(SQL_INSERT, VALUES)
                 CONN.commit()
                 DATA_LOG = {'nome':NOME, 'email':EMAIL}
