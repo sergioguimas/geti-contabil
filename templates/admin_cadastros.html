@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Administrativo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo">
+        <div id="header_">
+            <h1>Painel Administrativo</h1>
+        </div>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('logout') }}" id="sair">Sair</a>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="form-wrapper">
+            <div class="form-container">
+                <h2>Cadastrar Novo Contador</h2>
+                <form method="POST" action="{{ url_for('admin_page') }}">
+                    <input type="hidden" name="form_type" value="contador">
+                    
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" required>
+                    
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    
+                    <label for="senha">Senha:</label>
+                    <input type="password" id="senha" name="senha" required>
+                    
+                    <button type="submit">Cadastrar Contador</button>
+                </form>
+            </div>
+
+            <div class="form-container">
+                <h2>Cadastrar Nova Empresa</h2>
+                <form method="POST" action="{{ url_for('admin_page') }}">
+                    <input type="hidden" name="form_type" value="empresa">
+                    
+                    <label for="razao_social">Razão Social:</label>
+                    <input type="text" id="razao_social" name="razao_social" required>
+                    
+                    <label for="nome_fantasia">Nome Fantasia:</label>
+                    <input type="text" id="nome_fantasia" name="nome_fantasia">
+                    
+                    <label for="cnpj">CNPJ:</label>
+                    <input type="text" id="cnpj" name="cnpj" required>
+                    
+                    <label for="empresa_email">Email da Empresa:</label>
+                    <input type="email" id="empresa_email" name="empresa_email" required>
+                    
+                    <label for="contato">Contato (Telefone):</label>
+                    <input type="text" id="contato" name="contato" required>
+                    
+                    <button type="submit">Cadastrar Empresa</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

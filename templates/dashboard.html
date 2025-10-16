@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Seus Arquivos</title>
+    <title>Portal do Contador</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 </head>
 <body>
@@ -11,6 +11,14 @@
         <div class="header_">
             <h1>Bem-vindo(a), {{ username }}!</h1>
         </div>
+        <a href="{{ url_for('dashboard') }}" class="nav-link">
+            <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
+        </a>
+        {% if is_admin %}
+            <a href="{{ url_for('admin_page') }}" class="nav-link">
+                <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Admin" id="icon">
+            </a>
+        {% endif %}        
         <a href="{{ url_for('logout') }}" id="sair">Sair</a>
         <div class="spacer"></div>
     </header>
