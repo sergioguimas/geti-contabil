@@ -4,6 +4,9 @@ from email_validator import validate_email, EmailNotValidError
 import json
 import datetime
 from werkzeug.security import generate_password_hash
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 DATABASE = "usuarios.db"
 
