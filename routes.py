@@ -1,6 +1,6 @@
 import sqlite3
 from app import app
-from flask import render_template, request, redirect, url_for, session, g
+from flask import render_template, request, redirect, url_for, session, g, flash
 from werkzeug.security import check_password_hash
 from models import cadastro_contador, cadastro_empresa
 
