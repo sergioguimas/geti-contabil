@@ -7,17 +7,21 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 </head>
 <body>
-    <header>
+        <header>
+        <div class="header-nav"></div>
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo">
-        <div id="header_">
+        <div class="header_">
             <h1>Painel Administrativo</h1>
         </div>
-        <div>
-            <a href="{{ url_for('dashboard') }}" class="nav-link">
-                <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
+        <a href="{{ url_for('dashboard') }}" class="nav-link">
+            <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
+        </a>   
+        {% if is_admin %}
+            <a href="{{ url_for('admin_page') }}" class="nav-link">
+                <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Admin" id="icon">
             </a>
-            <a href="{{ url_for('logout') }}" id="sair">Sair</a>
-        </div>
+        {% endif %}            
+        <a href="{{ url_for('logout') }}" id="sair">Sair</a>
     </header>
 
     <div class="admin-container">

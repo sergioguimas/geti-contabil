@@ -7,6 +7,7 @@
 </head>
 <body>
     <header>
+        <div class="header-nav"></div>
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo">
         <div class="header_">
             <h1>Bem-vindo(a), {{ username }}!</h1>
@@ -20,7 +21,6 @@
             </a>
         {% endif %}        
         <a href="{{ url_for('logout') }}" id="sair">Sair</a>
-        <div class="spacer"></div>
     </header>
 
     <div class="dashboard-container">
