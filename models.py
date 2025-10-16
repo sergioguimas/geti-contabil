@@ -12,7 +12,7 @@ DATABASE = "usuarios.db"
 
 def valida_email(EMAIL):
     try:
-       validate_email(EMAIL, check_deliverability=True)
+       validate_email(EMAIL, check_deliverability=False)
        return True
     except EmailNotValidError as e:
        print(f"Log: {e}")
@@ -56,7 +56,7 @@ def cadastro_contador(NOME, EMAIL, SENHA):
         SQL = CONN.cursor()
         SQL.execute("SELECT COUNT(*) FROM contador WHERE email = ?", (EMAIL,))
         if SQL.fetchone()[0] > 0:
-            print("Email já cadastrado no sistema!")
+            return (False, f"O email '{EMAIL}' já está cadastrado no sistema.")
         else:
             if valida_email(EMAIL) == True:
                 SENHA = generate_password_hash(SENHA)
@@ -74,13 +74,15 @@ def cadastro_contador(NOME, EMAIL, SENHA):
                     ID_ENTIDADE=SQL.lastrowid,
                     DATA = DATA_LOG
                 )
+                return (True, f"Contador '{NOME}' cadastrado com sucesso!")
             else:
-                print(f"Email: {EMAIL} é inválido!")
+                return (False, f"O email '{EMAIL}' é inválido.")
     except sqlite3.Error as e:
         print(f"ERRO DE REGISTRO: Falha ao efetuar registro: {e}")
         DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         with open(f"Log_INSERT_CONTADOR_{DATE_LOG}", "w") as txt_log:
             txt_log.write(f"ERRO_DE_REGISTRO-CONTADOR-Falha ao efeturar registro-SQLog:{e}")
+        return (False, "Ocorreu um erro no servidor ao tentar cadastrar o contador.")
     finally:
         if CONN:
             CONN.close()
@@ -93,14 +95,14 @@ def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO):
         CNPJ = re.sub(r'[^\d]', '', CNPJ)
         SQL.execute("SELECT COUNT(*) FROM empresa WHERE cnpj = ?", (CNPJ,))
         if SQL.fetchone()[0] > 0:
-            print("CNPJ já cadastrado no sistema!")            
+            return (False, f"O CNPJ '{CNPJ}' já está cadastrado no sistema.")            
         else:
             SQL.execute("SELECT COUNT(*) FROM empresa WHERE g_drve_folder_id = ?", (ID_DRIVE,))
             if SQL.fetchone()[0] > 0:
-                print("Drive já associado a outra empresa!")
+                return (False, "Este ID do Google Drive já está associado a outra empresa.")
             elif valida_cnpj(CNPJ) == True:
                 CNPJ = re.sub(r'[^\d]', '', CNPJ)
-                SQL_INSERT = "INSERT INTO empresa (razao_social, cnpj, g_drive_folder_id, nome_fantasia, email, contato) VALUES (?, ?, ?, ?, ?, ?);"
+                SQL_INSERT = "INSERT INTO empresa (razao_social, cnpj, g_drve_folder_id, nome_fantasia, email, contato) VALUES (?, ?, ?, ?, ?, ?);"
                 VALUES = (RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO)
                 SQL.execute(SQL_INSERT, VALUES)
                 CONN.commit()
@@ -115,12 +117,13 @@ def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO):
                     DATA=DATA_LOG
                 )
             else:
-                print(f"CNPJ: {CNPJ} é inválido!")
+                return (False, f"CNPJ: {CNPJ} é inválido!")
     except sqlite3.Error as e:
         print(f"ERRO DE REGISTRO: Falha ao efetuar registro: {e}")
         DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         with open(f"Log_INSERT_EMPRESA_{DATE_LOG}", "w") as txt_log:
             txt_log.write(f"ERRO_DE_REGISTRO-EMPRESA-Falha ao efeturar registro-SQLog:{e}")
+        return (False, "Ocorreu um erro no servidor ao tentar cadastrar a empresa.")
     finally:
         if CONN:
             CONN.close()
@@ -133,15 +136,15 @@ def vincular_contador_empresa(ID_CONTADOR, ID_EMPRESA):
         SQL.execute("SELECT COUNT(*) FROM contador_empresa WHERE id_contador = ? AND id_empresa = ?", (ID_CONTADOR, ID_EMPRESA,))
         if SQL.fetchone()[0] > 0:
             print("Empresa já associada a contador!")
-            return
+            return (False, "Esta empresa já está associada a este contador.")
         SQL.execute("SELECT COUNT(*) FROM contador WHERE id = ?", (ID_CONTADOR,))
         if SQL.fetchone()[0] == 0:
             print("Contador não existe!")
-            return
+            return (False, "Contador não existe!")
         SQL.execute("SELECT COUNT(*) FROM empresa WHERE id = ?", (ID_EMPRESA,))
         if SQL.fetchone()[0] == 0:
             print("Empresa não existe!")
-            return
+            return (False, "Empresa não existe!")
         SQL_INSERT = "INSERT INTO contador_empresa (id_contador, id_empresa) VALUES (?, ?)"
         VALUES = (ID_CONTADOR, ID_EMPRESA)
         SQL.execute(SQL_INSERT, VALUES)
@@ -156,11 +159,16 @@ def vincular_contador_empresa(ID_CONTADOR, ID_EMPRESA):
             ID_ENTIDADE=SQL.lastrowid,
             DATA=DATA_LOG
         )
+        return (True, "Vinculação efetuada com sucesso!")
     except sqlite3.Error as e:
         print(f"ERRO DE REGISTRO: Falha ao efetuar o registro - {e}")
         DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         with open(f"Log_INSERT_CONT_EMPR_{DATE_LOG}", "w") as txt_log:
             txt_log.write(f"ERRO_DE_REGISTRO-CONTADOR_EMPRESA-Falha ao efeturar registro - SQLog:{e}")
+        return (False, f"Erro ao efetuar a vinculação: {e}")
+    finally:
+        if CONN:
+            CONN.close()
 
 def vincular_empresa_drive(ID_EMPRESA, ID_DRIVE):
     CONN = None
@@ -169,7 +177,7 @@ def vincular_empresa_drive(ID_EMPRESA, ID_DRIVE):
         SQL = CONN.cursor()
         SQL.execute("SELECT COUNT(*) FROM empresa WHERE id = ?", (ID_EMPRESA,))
         if SQL.fetchone()[0] == 0:
-            print(f"Empresa inesistente")
+            return (False, "Empresa não existe!")
         else:
             SQL_UPDATE ="UPDATE empresa SET g_drve_folder_id = ? WHERE id = ?"
             VALUES = (ID_DRIVE, ID_EMPRESA)
@@ -185,8 +193,13 @@ def vincular_empresa_drive(ID_EMPRESA, ID_DRIVE):
                 ID_ENTIDADE=ID_EMPRESA,
                 DATA=DATA_LOG
             )
+            return (True, "Vinculação efetuada com sucesso!")
     except sqlite3.Error as e:
         print(f"ERRO DE ALTERAÇÃO: Falha ao alterar o registro - {e}")
         DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         with open(f"Log_UPDATE_EMPRESA_{DATE_LOG}", "w") as txt_log:
             txt_log.write(f"ERRO_DE_UPDATE-EMPRESA-Falha ao alterar registro - SQLog:{e}")
+        return (False, f"Erro ao efetuar a vinculação: {e}")
+    finally:
+        if CONN:
+            CONN.close()

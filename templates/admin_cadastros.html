@@ -55,16 +55,15 @@
                     <label for="senha">Senha:</label>
                     <input type="password" id="senha" name="senha" required>
 
-                    <label for="empresa">Atribuir Empresa:</label>
-                    <form action="{{ url_for('dashboard')}}" method="GET">
-                        <select name="empresa_id" class="empresa-select">
-                            {% for empresa in empresas %}
-                                <option value="{{ empresa.id }}">
-                                    {{ empresa.nome_fantasia or empresa.razao_social }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </form>
+                    <label for="empresa_id">Atribuir a uma Empresa (Opcional):</label>
+                    <select name="empresa_id" id="empresa_id">
+                        <option value="">-- Nenhuma --</option>
+                        {% for empresa in empresas %}
+                            <option value="{{ empresa.id }}">
+                                {{ empresa.nome_fantasia or empresa.razao_social }}
+                            </option>
+                        {% endfor %}
+                    </select>
                     <button type="submit">Cadastrar Contador</button>
                 </form>
             </div>
@@ -92,17 +91,15 @@
                     <label for="drive_id">ID do Google Drive:</label>
                     <input type="text" id="drive_id" name="drive_id" required>
                     
-                    <label for="contador">Atribuir Contador:</label>
-                    <form action="{{ url_for('dashboard')}}" method="GET">
-                        <select name="contador_id" class="empresa-select">
-                            {% for contador in contadores %}
-                                <option value="{{ contador.id }}">
-                                    {{ contador.nome }} - {{ contador.email }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </form>                    
-                    
+                    <label for="contador_id">Atribuir a um Contador (Opcional):</label>
+                    <select name="contador_id" id="contador_id">
+                        <option value="">-- Nenhum --</option>
+                        {% for contador in contadores %}
+                            <option value="{{ contador.id }}">
+                                {{ contador.nome }} ({{ contador.email }})
+                            </option>
+                        {% endfor %}
+                    </select>                    
                     <button type="submit">Cadastrar Empresa</button>
                 </form>
             </div>

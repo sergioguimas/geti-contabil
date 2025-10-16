@@ -96,10 +96,12 @@ def admin_page():
             nome = request.form.get('nome')
             email = request.form.get('email')
             senha = request.form.get('senha')
-            # Precisa ajustar a função em models.py para retornar mensagens
-            # Por enquanto, estamos chamando a função
-            cadastro_contador(nome, email, senha)
-            flash(f"Contador '{nome}' cadastrado com sucesso!", 'success')
+            sucesso, mensagem = cadastro_contador(nome, email, senha)
+            if sucesso:
+                flash(mensagem, 'success')
+            else:
+                flash(mensagem, 'error')
+            
 
         elif form_type == 'empresa':
             razao_social = request.form.get('razao_social')
@@ -107,13 +109,17 @@ def admin_page():
             cnpj = request.form.get('cnpj')
             empresa_email = request.form.get('empresa_email')
             contato = request.form.get('contato')
-            drive_id = request.form.get('g_drive_folder_id')
-            cadastro_empresa(razao_social, cnpj, drive_id, nome_fantasia, empresa_email, contato)
-            flash(f"Empresa '{nome_fantasia or razao_social}' cadastrada com sucesso!", 'success')
-            
-        return redirect(url_for('admin_page'))
-
-    return render_template("admin_cadastros.html")
+            drive_id = request.form.get('drive_id')
+            sucesso, mensagem = cadastro_empresa(razao_social, cnpj, drive_id, nome_fantasia, empresa_email, contato)
+            if sucesso:
+                flash(mensagem, 'success')
+            else:
+                flash(mensagem, 'error')
+        return redirect(url_for('admin_page'))                
+    db = get_db()
+    contadores = db.execute("SELECT id, nome, email FROM contador ORDER BY nome").fetchall()
+    empresas = db.execute("SELECT id, nome_fantasia, razao_social FROM empresa ORDER BY nome_fantasia").fetchall()                
+    return render_template("admin_cadastros.html", contadores=contadores, empresas=empresas)
 
 @app.route("/logout")
 def logout():
