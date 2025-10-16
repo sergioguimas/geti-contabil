@@ -56,9 +56,9 @@ def cadastro_contador(NOME, EMAIL, SENHA):
             print("Email já cadastrado no sistema!")
         else:
             if valida_email(EMAIL) == True:
-                senha_hash = generate_password_hash(SENHA)
+                SENHA = generate_password_hash(SENHA)
                 SQL_INSERT = "INSERT INTO contador (nome, email, senha_hash) VALUES(?, ?, ?);"
-                VALUES = (NOME, EMAIL, senha_hash)
+                VALUES = (NOME, EMAIL, SENHA)
                 SQL.execute(SQL_INSERT, VALUES)
                 CONN.commit()
                 DATA_LOG = {'nome':NOME, 'email':EMAIL}
