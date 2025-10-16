@@ -6,7 +6,7 @@
     display: flex;
     gap: 40px;
     flex-wrap: wrap;
-}    
+}
 
 .form-container {
     background-color: #fff;
@@ -64,15 +64,18 @@
 .flash-messages {
     margin-bottom: 20px;
 }
+
 .flash {
     padding: 15px;
     border-radius: 5px;
     color: #fff;
     margin-bottom: 10px;
 }
+
 .flash.success {
     background-color: #28a745;
 }
+
 .flash.error {
     background-color: #dc3545;
 }

@@ -7,20 +7,31 @@
 </head>
 <body>
     <header>
-        <div class="header-nav"></div>
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo">
-        <div class="header_">
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo">
+        </div>
+
+        <div class="header-center">
             <h1>Bem-vindo(a), {{ username }}!</h1>
         </div>
-        <a href="{{ url_for('dashboard') }}" class="nav-link">
-            <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
-        </a>
-        {% if is_admin %}
-            <a href="{{ url_for('admin_page') }}" class="nav-link">
-                <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Admin" id="icon">
+
+        <div class="header-right">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">
+                <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
+                <span>Arquivos</span>
             </a>
-        {% endif %}        
-        <a href="{{ url_for('logout') }}" id="sair">Sair</a>
+            {% if is_admin %}
+                <a href="{{ url_for('admin_page') }}" class="nav-link">
+                    <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Admin" id="icon">
+                    <span>Administração</span>
+                </a>
+            {% endif %}        
+            <a href="{{ url_for('logout') }}" id="sair">
+                <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Sair" id="icon">
+                <span>Sair</span>
+            </a>
+        </div>
+    </header>
     </header>
 
     <div class="dashboard-container">
