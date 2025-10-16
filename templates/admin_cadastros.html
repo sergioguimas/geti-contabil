@@ -93,7 +93,6 @@
                     
                     <label for="contador_id">Atribuir a um Contador (Opcional):</label>
                     <select name="contador_id" id="contador_id">
-                        <option value="">-- Nenhum --</option>
                         {% for contador in contadores %}
                             <option value="{{ contador.id }}">
                                 {{ contador.nome }} ({{ contador.email }})

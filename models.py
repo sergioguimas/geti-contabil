@@ -49,10 +49,11 @@ def insert_log(OPERACAO, NATUREZA, ACAO, ID_AUTOR=None, TIPO_ENTIDADE=None, ID_E
 
 
 
-def cadastro_contador(NOME, EMAIL, SENHA):
+def cadastro_contador(NOME, EMAIL, SENHA, EMPRESA=None):
     CONN = None
     try:
         CONN = sqlite3.connect(DATABASE)
+        CONN.row_factory = sqlite3.Row
         SQL = CONN.cursor()
         SQL.execute("SELECT COUNT(*) FROM contador WHERE email = ?", (EMAIL,))
         if SQL.fetchone()[0] > 0:
@@ -74,7 +75,16 @@ def cadastro_contador(NOME, EMAIL, SENHA):
                     ID_ENTIDADE=SQL.lastrowid,
                     DATA = DATA_LOG
                 )
-                return (True, f"Contador '{NOME}' cadastrado com sucesso!")
+                if EMPRESA:
+                    sucesso, mensagem = vincular_contador_empresa(SQL.lastrowid, EMPRESA)
+                    if sucesso:
+                        SQL.execute("SELECT nome_fantasia, razao_social FROM empresa WHERE id = ?", (EMPRESA,))
+                        info_empresa = SQL.fetchone()
+                        nome_empresa = info_empresa['nome_fantasia'] or info_empresa['razao_social'] if info_empresa else "ID " + EMPRESA
+                        return (True, f"Contador '{NOME}' cadastrado e vinculado à empresa '{nome_empresa}' com sucesso!")
+                    else:
+                        return (True, f"Contador '{NOME}' cadastrado com sucesso! Porém, falha ao vincular na empresa {nome_empresa}.")
+                return (True, f"Contador '{NOME}' cadastrado com sucesso, sem empresa vinculada!")
             else:
                 return (False, f"O email '{EMAIL}' é inválido.")
     except sqlite3.Error as e:
@@ -87,10 +97,11 @@ def cadastro_contador(NOME, EMAIL, SENHA):
         if CONN:
             CONN.close()
 
-def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO):
+def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO, ID_CONTADOR=None):
     CONN = None
     try:
         CONN = sqlite3.connect(DATABASE)
+        CONN.row_factory = sqlite3.Row
         SQL = CONN.cursor()
         CNPJ = re.sub(r'[^\d]', '', CNPJ)
         SQL.execute("SELECT COUNT(*) FROM empresa WHERE cnpj = ?", (CNPJ,))
@@ -116,6 +127,19 @@ def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO):
                     ID_ENTIDADE=SQL.lastrowid,
                     DATA=DATA_LOG
                 )
+                if ID_CONTADOR:
+                    sucesso, mensagem = vincular_contador_empresa(ID_CONTADOR, SQL.lastrowid)
+                    if sucesso:
+                        SQL.execute("SELECT nome, email FROM contador WHERE id = ?", (ID_CONTADOR,))
+                        resultado = SQL.fetchone()
+                        if resultado and resultado['email'] == 'adm@adm.com':
+                            return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada com sucesso! Porém, sem vinculo de contador.")
+                        else:
+                            nome_contador = resultado['nome']
+                            vincular_contador_empresa(ID_CONTADOR, SQL.lastrowid)
+                            return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada e vinculada ao contador '{nome_contador}' com sucesso!")
+                    else:
+                        return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada com sucesso! Porém, falha ao vincular ao contador: {mensagem}")
             else:
                 return (False, f"CNPJ: {CNPJ} é inválido!")
     except sqlite3.Error as e:

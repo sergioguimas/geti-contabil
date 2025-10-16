@@ -96,7 +96,8 @@ def admin_page():
             nome = request.form.get('nome')
             email = request.form.get('email')
             senha = request.form.get('senha')
-            sucesso, mensagem = cadastro_contador(nome, email, senha)
+            empresa_id = request.form.get('empresa')
+            sucesso, mensagem = cadastro_contador(nome, email, senha, empresa_id)
             if sucesso:
                 flash(mensagem, 'success')
             else:
@@ -110,7 +111,8 @@ def admin_page():
             empresa_email = request.form.get('empresa_email')
             contato = request.form.get('contato')
             drive_id = request.form.get('drive_id')
-            sucesso, mensagem = cadastro_empresa(razao_social, cnpj, drive_id, nome_fantasia, empresa_email, contato)
+            contador_id = request.form.get('contador_id')
+            sucesso, mensagem = cadastro_empresa(razao_social, cnpj, drive_id, nome_fantasia, empresa_email, contato, contador_id)
             if sucesso:
                 flash(mensagem, 'success')
             else:
