@@ -107,8 +107,8 @@ def admin_page():
             cnpj = request.form.get('cnpj')
             empresa_email = request.form.get('empresa_email')
             contato = request.form.get('contato')
-            # A função em models.py espera o ID do Drive, None por enquanto
-            cadastro_empresa(razao_social, cnpj, None, nome_fantasia, empresa_email, contato)
+            drive_id = request.form.get('g_drive_folder_id')
+            cadastro_empresa(razao_social, cnpj, drive_id, nome_fantasia, empresa_email, contato)
             flash(f"Empresa '{nome_fantasia or razao_social}' cadastrada com sucesso!", 'success')
             
         return redirect(url_for('admin_page'))
