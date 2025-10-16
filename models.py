@@ -184,6 +184,3 @@ def vincular_empresa_drive(ID_EMPRESA, ID_DRIVE):
         DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         with open(f"Log_UPDATE_EMPRESA_{DATE_LOG}", "w") as txt_log:
             txt_log.write(f"ERRO_DE_UPDATE-EMPRESA-Falha ao alterar registro - SQLog:{e}")
-
-
-vincular_empresa_drive("2", "25000")
