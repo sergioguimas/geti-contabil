@@ -13,7 +13,9 @@
             <h1>Painel Administrativo</h1>
         </div>
         <div>
-            <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('dashboard') }}" class="nav-link">
+                <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
+            </a>
             <a href="{{ url_for('logout') }}" id="sair">Sair</a>
         </div>
     </header>

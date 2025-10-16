@@ -5,8 +5,8 @@
 .form-wrapper {
     display: flex;
     gap: 40px;
-    flex-wrap: wrap; /* Permite que os formulários quebrem a linha em telas menores */
-}
+    flex-wrap: wrap;
+}    
 
 .form-container {
     background-color: #fff;
@@ -58,19 +58,6 @@
 }
 
 .form-container button:hover {
-    background-color: #4338ca;
-}
-
-.nav-link {
-    color: white;
-    text-decoration: none;
-    background-color: #09e9d6;
-    padding: 8px 16px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.nav-link:hover {
     background-color: #4338ca;
 }
 
