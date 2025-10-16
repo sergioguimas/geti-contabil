@@ -4,6 +4,9 @@ from email_validator import validate_email, EmailNotValidError
 import json
 import datetime
 from werkzeug.security import generate_password_hash
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 DATABASE = "usuarios.db"
 
@@ -56,9 +59,9 @@ def cadastro_contador(NOME, EMAIL, SENHA):
             print("Email já cadastrado no sistema!")
         else:
             if valida_email(EMAIL) == True:
-                senha_hash = generate_password_hash(SENHA)
+                SENHA = generate_password_hash(SENHA)
                 SQL_INSERT = "INSERT INTO contador (nome, email, senha_hash) VALUES(?, ?, ?);"
-                VALUES = (NOME, EMAIL, senha_hash)
+                VALUES = (NOME, EMAIL, SENHA)
                 SQL.execute(SQL_INSERT, VALUES)
                 CONN.commit()
                 DATA_LOG = {'nome':NOME, 'email':EMAIL}
@@ -90,9 +93,12 @@ def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO):
         CNPJ = re.sub(r'[^\d]', '', CNPJ)
         SQL.execute("SELECT COUNT(*) FROM empresa WHERE cnpj = ?", (CNPJ,))
         if SQL.fetchone()[0] > 0:
-            print("CNPJ já cadastrado no sistema!")
+            print("CNPJ já cadastrado no sistema!")            
         else:
-            if valida_cnpj(CNPJ) == True:
+            SQL.execute("SELECT COUNT(*) FROM empresa WHERE g_drve_folder_id = ?", (ID_DRIVE,))
+            if SQL.fetchone()[0] > 0:
+                print("Drive já associado a outra empresa!")
+            elif valida_cnpj(CNPJ) == True:
                 CNPJ = re.sub(r'[^\d]', '', CNPJ)
                 SQL_INSERT = "INSERT INTO empresa (razao_social, cnpj, g_drve_folder_id, nome_fantasia, email, contato) VALUES (?, ?, ?, ?, ?, ?);"
                 VALUES = (RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO)

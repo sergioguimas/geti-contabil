@@ -1,4 +1,7 @@
 import sqlite3
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 empresas_para_adicionar = [
     {
