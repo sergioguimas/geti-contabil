@@ -54,7 +54,17 @@
                     
                     <label for="senha">Senha:</label>
                     <input type="password" id="senha" name="senha" required>
-                    
+
+                    <label for="empresa">Atribuir Empresa:</label>
+                    <form action="{{ url_for('dashboard')}}" method="GET">
+                        <select name="empresa_id" class="empresa-select">
+                            {% for empresa in empresas %}
+                                <option value="{{ empresa.id }}">
+                                    {{ empresa.nome_fantasia or empresa.razao_social }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
                     <button type="submit">Cadastrar Contador</button>
                 </form>
             </div>
@@ -78,6 +88,17 @@
                     
                     <label for="contato">Contato (Telefone):</label>
                     <input type="text" id="contato" name="contato" required>
+
+                    <label for="contador">Atribuir Contador:</label>
+                    <form action="{{ url_for('dashboard')}}" method="GET">
+                        <select name="contador_id" class="empresa-select">
+                            {% for contador in contadores %}
+                                <option value="{{ contador.id }}">
+                                    {{ contador.nome }} - {{ contador.email }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>                    
                     
                     <button type="submit">Cadastrar Empresa</button>
                 </form>

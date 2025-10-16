@@ -85,7 +85,6 @@ def dashboard():
 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin_page():
-    # Proteção: só permite acesso se o usuário for o admin
     if session.get('user_email') != 'adm@adm.com':
         flash('Acesso não autorizado.', 'error')
         return redirect(url_for('dashboard'))
@@ -97,7 +96,7 @@ def admin_page():
             nome = request.form.get('nome')
             email = request.form.get('email')
             senha = request.form.get('senha')
-            # Você precisará ajustar sua função em models.py para retornar mensagens
+            # Precisa ajustar a função em models.py para retornar mensagens
             # Por enquanto, estamos chamando a função
             cadastro_contador(nome, email, senha)
             flash(f"Contador '{nome}' cadastrado com sucesso!", 'success')
@@ -108,7 +107,7 @@ def admin_page():
             cnpj = request.form.get('cnpj')
             empresa_email = request.form.get('empresa_email')
             contato = request.form.get('contato')
-            # A função em models.py espera o ID do Drive, passaremos None por enquanto
+            # A função em models.py espera o ID do Drive, None por enquanto
             cadastro_empresa(razao_social, cnpj, None, nome_fantasia, empresa_email, contato)
             flash(f"Empresa '{nome_fantasia or razao_social}' cadastrada com sucesso!", 'success')
             
