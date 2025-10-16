@@ -90,9 +90,12 @@ def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO):
         CNPJ = re.sub(r'[^\d]', '', CNPJ)
         SQL.execute("SELECT COUNT(*) FROM empresa WHERE cnpj = ?", (CNPJ,))
         if SQL.fetchone()[0] > 0:
-            print("CNPJ já cadastrado no sistema!")
+            print("CNPJ já cadastrado no sistema!")            
         else:
-            if valida_cnpj(CNPJ) == True:
+            SQL.execute("SELECT COUNT(*) FROM empresa WHERE g_drve_folder_id = ?", (ID_DRIVE,))
+            if SQL.fetchone()[0] > 0:
+                print("Drive já associado a outra empresa!")
+            elif valida_cnpj(CNPJ) == True:
                 CNPJ = re.sub(r'[^\d]', '', CNPJ)
                 SQL_INSERT = "INSERT INTO empresa (razao_social, cnpj, g_drve_folder_id, nome_fantasia, email, contato) VALUES (?, ?, ?, ?, ?, ?);"
                 VALUES = (RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO)
