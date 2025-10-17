@@ -96,7 +96,7 @@ def admin_page():
             nome = request.form.get('nome')
             email = request.form.get('email')
             senha = request.form.get('senha')
-            empresa_id = request.form.get('empresa')
+            empresa_id = request.form.get('empresa_id')
             sucesso, mensagem = cadastro_contador(nome, email, senha, empresa_id)
             if sucesso:
                 flash(mensagem, 'success')
