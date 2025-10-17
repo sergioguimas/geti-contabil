@@ -78,13 +78,15 @@ def cadastro_contador(NOME, EMAIL, SENHA, EMPRESA=None):
                 if EMPRESA:
                     sucesso, mensagem = vincular_contador_empresa(SQL.lastrowid, EMPRESA)
                     if sucesso:
-                        SQL.execute("SELECT nome_fantasia, razao_social FROM empresa WHERE id = ?", (EMPRESA,))
+                        SQL.execute("SELECT nome_fantasia FROM empresa WHERE id = ?", (EMPRESA,))
                         info_empresa = SQL.fetchone()
-                        nome_empresa = info_empresa['nome_fantasia'] or info_empresa['razao_social'] if info_empresa else "ID " + EMPRESA
-                        return (True, f"Contador '{NOME}' cadastrado e vinculado à empresa '{nome_empresa}' com sucesso!")
+                        if info_empresa and info_empresa['nome_fantasia'] == 'Admin':
+                            return (True, f"Contador '{NOME}' cadastrado sem vinculo de empresa com sucesso!")
+                        else:
+                            nome_empresa = info_empresa['nome_fantasia']
+                            return (True, f"Contador '{NOME}' cadastrado e vinculado na empresa {nome_empresa} com sucesso!")
                     else:
-                        return (True, f"Contador '{NOME}' cadastrado com sucesso! Porém, falha ao vincular na empresa {nome_empresa}.")
-                return (True, f"Contador '{NOME}' cadastrado com sucesso, sem empresa vinculada!")
+                        return (True, f"Contador '{NOME}' cadastrado com sucesso! Porém, falha ao vincular na empresa.")
             else:
                 return (False, f"O email '{EMAIL}' é inválido.")
     except sqlite3.Error as e:

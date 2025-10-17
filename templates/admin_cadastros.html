@@ -57,7 +57,6 @@
 
                     <label for="empresa_id">Atribuir a uma Empresa (Opcional):</label>
                     <select name="empresa_id" id="empresa_id">
-                        <option value="">-- Nenhuma --</option>
                         {% for empresa in empresas %}
                             <option value="{{ empresa.id }}">
                                 {{ empresa.nome_fantasia or empresa.razao_social }}
