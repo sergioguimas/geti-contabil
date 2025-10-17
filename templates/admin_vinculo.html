@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Administrativo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo">
+        </div>
+
+        <div class="header-center">
+            <h1>Painel Administrativo</h1>
+        </div>
+
+        <div class="header-right">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">
+                <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
+                <span>Arquivos</span>
+            </a>     
+            <a href="{{ url_for('logout') }}" id="sair">
+                <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Sair" id="icon">
+                <span>Sair</span>
+            </a>
+        </div>
+    </header>    
+    
+</body>
+</html>

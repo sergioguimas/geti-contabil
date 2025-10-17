@@ -17,10 +17,14 @@
         </div>
 
         <div class="header-right">
+            <a href="{{ url_for('vinculos') }}" class="nav-link">
+                <img src="{{ url_for('static', filename='images/chain.png') }}" alt="Vincular" id="icon">
+                <span>Vinculos</span>
+            </a>                 
             <a href="{{ url_for('dashboard') }}" class="nav-link">
                 <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
                 <span>Arquivos</span>
-            </a>     
+            </a>
             <a href="{{ url_for('logout') }}" id="sair">
                 <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Sair" id="icon">
                 <span>Sair</span>

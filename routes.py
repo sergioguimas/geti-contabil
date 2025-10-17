@@ -123,6 +123,29 @@ def admin_page():
     empresas = db.execute("SELECT id, nome_fantasia, razao_social FROM empresa ORDER BY nome_fantasia").fetchall()                
     return render_template("admin_cadastros.html", contadores=contadores, empresas=empresas)
 
+@app.route("/vinculos", methods=['GET', 'POST'])
+def vinculos():
+    if session.get('user_email') != 'adm@adm.com':
+        flash('Acesso não autorizado.', 'error')
+        return redirect(url_for('dashboard'))
+        
+    if 'user_name' in session:
+        db = get_db()
+        empresas = db.execute(
+            """
+            SELECT e.id, e.nome_fantasia, e.razao_social
+            FROM empresa e
+            JOIN contador_empresa ce ON e.id = ce.id_empresa
+            WHERE ce.id_contador = ?
+            ORDER BY e.nome_fantasia
+            """,
+            (session['user_id'],)
+        ).fetchall()
+
+        username = session['user_name']
+
+        is_admin = session.get('user_email') == ''
+
 @app.route("/logout")
 def logout():
     session.clear()
