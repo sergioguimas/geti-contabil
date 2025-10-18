@@ -3,6 +3,12 @@ from app import app
 from flask import render_template, request, redirect, url_for, session, g, flash
 from werkzeug.security import check_password_hash
 from models import cadastro_contador, cadastro_empresa
+import os.path
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 DATABASE = 'usuarios.db'
 
