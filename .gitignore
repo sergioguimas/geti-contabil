@@ -13,3 +13,7 @@ __pycache__
 #Google drive api
 credentials.json
 token.json
+
+#
+schemas.sql
+usuarios.db
