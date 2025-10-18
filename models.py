@@ -231,3 +231,117 @@ def vincular_empresa_drive(ID_EMPRESA, ID_DRIVE):
     finally:
         if CONN:
             CONN.close()
+
+def deletar_cadastro_contador(ID_CONTADOR,):
+    CONN = None
+    try:
+        CONN = sqlite3.connect(DATABASE, timeout=10.0)
+        SQL = CONN.cursor()
+        SQL.execute("SELECT COUNT(*) FROM contador WHERE id = ?", (ID_CONTADOR,))
+        if SQL.fetchone()[0] == 0:
+            print(f"Contador não existe!")
+            return (False, f"Contador não existe!")
+        else:
+            SQL.execute("SELECT * FROM contador WHERE id = ?", (ID_CONTADOR,))
+            DATA = SQL.fetchall()
+            SQL.execute("DELETE FROM contador_empresa WHERE id_contador = ?", (ID_CONTADOR,))
+            SQL.execute("DELETE FROM contador WHERE id = ?", (ID_CONTADOR,))
+            CONN.commit()
+            DATA_LOG = {'DATA':DATA}
+            insert_log(
+                'DELETE',
+                'SQL',
+                'DELETE REGISTRO CONTADOR',
+                ID_AUTOR=None,
+                TIPO_ENTIDADE='CONTADOR',
+                ID_ENTIDADE=ID_CONTADOR,
+                DATA=DATA_LOG
+            )
+            print(f"Registro de contador apagado com sucesso.")
+            return (True, f"Registro de contador apagado com sucesso")
+    except sqlite3.Error as e:
+        print(f"ERRO AO DELETAR REGISTRO DE CONTADOR - LOG:{e}")
+        DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        with open(f"Log_DELETE_CONTADOR_{DATE_LOG}", "w") as txt_log:
+            txt_log.write(f"ERRO_DELETE_EMPRESA_SQLog:{e}")
+            return(False, f"ERRO AO DELETAR REGISTRO DE CONTADOR - LOG{e}")
+    finally:
+        if CONN:
+            CONN.close()
+
+def deletar_cadastro_empresa(ID_EMPRESA,):
+    CONN = None
+    try:
+        CONN = sqlite3.connect(DATABASE, timeout=10.0)
+        SQL = CONN.cursor()
+        SQL.execute("SELECT COUNT(*) FROM empresa WHERE id = ?", (ID_EMPRESA,))
+        if SQL.fetchone()[0] == 0:
+            print(f"Empresa não existe!")
+            return (False, f"Empresa não existe!")
+        else:
+            SQL.execute("SELECT * FROM empresa WHERE id = ?", (ID_EMPRESA,))
+            DATA = SQL.fetchall()
+            SQL.execute("DELETE FROM contador_empresa WHERE id_empresa = ?", (ID_EMPRESA))
+            SQL.execute("DELETE FROM empresa WHERE id = ?", (ID_EMPRESA,))
+            CONN.commit()
+            DATA_LOG = {'data':DATA}
+            insert_log(
+                'DELETE',
+                'SQL',
+                'DELETE REGISTRO EMPRESA',
+                ID_AUTOR=None,
+                TIPO_ENTIDADE='EMPRESA',
+                ID_ENTIDADE=ID_EMPRESA,
+                DATA=DATA_LOG
+            )
+            print(f"Regsitro de empresa apagado com sucesso!")
+            return (True, f"Registro de empresa apagado com sucesso!")
+    except sqlite3.Error as e:
+        print(f"ERRO AO DELETER EMPRESA - LOG:{e}")
+        DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        with open(f"ERROR_LOG_DELETE_EMPRESA_{DATE_LOG}", "w") as txt_log:
+            txt_log.write(f"ERROR_DELETE_EMPRESA_LOG_{e}")
+            return (False, f"ERRO AO DELETER EMPRESA - LOG:{e}")
+    finally:
+        if CONN:
+            CONN.close()
+
+def deletar_vinculo_empresa_contador(ID_CONTADOR, ID_EMPRESA):
+    CONN = None
+    try:
+        CONN = sqlite3.connect(DATABASE, timeout=10.0)
+        SQL = CONN.cursor()
+        SQL.execute("SELECT COUNT(*) FROM contador_empresa WHERE id_contador = ? AND id_empresa = ?", (ID_CONTADOR, ID_EMPRESA,))
+        if SQL.fetchone()[0] == 0:
+            print(f"NÃO EXISTE VÍNCULO ENTRE ESSA EMPRESA E CONTADOR")
+            return (False, f"Não existe vínculo entre essa empresa e contador!")
+        SQL.execute("SELECT COUNT(*) FROM contador WHERE id = ?", (ID_CONTADOR,))
+        if SQL.fetchone()[0] == 0:
+            print(f"CONTADOR NÃO EXISTE")
+            return (False, f"Contador não existe!")
+        SQL.execute("SELECT COUNT(*) FROM empresa WHERE id = ?", (ID_EMPRESA,))
+        if SQL.fetchone()[0] == 0:
+            print(f"EMPRESA NÃO EXISTE!")
+            return (False, f"Empresa não existe!")
+        SQL.execute("DELETE FROM contador_empresa WHERE id_contador = ? AND id_empresa = ?", (ID_CONTADOR, ID_EMPRESA,))
+        CONN.commit()
+        insert_log(
+            'DELETE',
+            'SQL',
+            'DELETE_VINCULO_EMPRESA_CONTADOR',
+            ID_AUTOR=None,
+            TIPO_ENTIDADE="VINCULO_CONTADOR_EMPRESA",
+            ID_ENTIDADE= ID_CONTADOR + ID_EMPRESA,
+            DATA=None
+        )
+        print(f"VINCULO ENTRE EMPRESA E CONTADOR EXLCUÍDO COM SUCESSO!")
+        return(True, f"Vínculo entre empresa e contadot excluído com sucesso!")
+    except sqlite3.Error as e:
+        print(f"ERRO AO EXCLUIR REGISTRO DE VINCULO EMPRE CONTADOR - LOG:{e}")
+        DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        with open(f"ERROR_LOG_DELETE_VINCULO_EMPRESA_CONTADOR_{DATE_LOG}", "w") as txt_log:
+            txt_log.write(f"ERROR_LOG_DELETE_VINCULO_EMPRESA_CONTADOR_{e}")
+            return (False, f"ERRO AO EXCLUIR REGISTRO DE VINCULO EMPRE CONTADOR - LOG:{e}")
+    finally:
+        if CONN:
+            CONN.close()
