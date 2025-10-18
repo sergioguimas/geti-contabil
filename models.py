@@ -6,10 +6,19 @@ import datetime
 from werkzeug.security import generate_password_hash
 import os
 from dotenv import load_dotenv
+import os.path
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 load_dotenv()
 
 DATABASE = "usuarios.db"
 
+# COMEÇO -  FUNÇÕES AUXILIARES
+
+#VALIDAÇÃO EMAIL
 def valida_email(EMAIL):
     try:
        validate_email(EMAIL, check_deliverability=False)
@@ -17,15 +26,21 @@ def valida_email(EMAIL):
     except EmailNotValidError as e:
        print(f"Log: {e}")
        return False
-    
+
+#VALIDAÇÃO CNPJ    
 def valida_cnpj(CNPJ):
     CNPJ = re.sub(r'[^\d]', '', CNPJ)
     if len(CNPJ) == 14:
         return True
     else:
         return False
+#FIM - FUNÇÕES AUXILIARES
 
-    
+#INICIO - FUNÇÕES SQL
+    #INICIO - INSERTS 
+
+        #INICIO- LOG
+#INSERT PADRÃO DE LOG
 def insert_log(OPERACAO, NATUREZA, ACAO, ID_AUTOR=None, TIPO_ENTIDADE=None, ID_ENTIDADE=None, DATA=None):
     CONN = None
     try:
@@ -45,10 +60,11 @@ def insert_log(OPERACAO, NATUREZA, ACAO, ID_AUTOR=None, TIPO_ENTIDADE=None, ID_E
     finally:
         if CONN:
             CONN.close()
+        #FIM - LOG
 
+        #INICIO - CADASTROS
 
-
-
+#CADASTRO DE CONTADPR
 def cadastro_contador(NOME, EMAIL, SENHA, EMPRESA=None):
     CONN = None
     try:
@@ -101,6 +117,7 @@ def cadastro_contador(NOME, EMAIL, SENHA, EMPRESA=None):
         if CONN:
             CONN.close()
 
+#CADASTRO DE EMPRESA
 def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO, ID_CONTADOR=None):
     CONN = None
     try:
@@ -131,6 +148,9 @@ def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO, ID_
                     ID_ENTIDADE=SQL.lastrowid,
                     DATA=DATA_LOG
                 )
+                #QUE HADUKEN É ESSE MEU NOBRE? SEPARA BONITIM AE, DEIXA DESORGANIZADO NÃO, SE NÃO DEPOIS QUEBRA A CABEÇA PRA CONSERTAR
+                #DEPOIS VOU ALTERAR ISSO AQUI, TA RUIM DE ENTENDER, MALS AE, ADICIONAR OS LOG TAMBÉM - FAZER UAM FUNÇÃO PRA ISSO E SO PUXAR
+                #FICA MELHOR VISUALMENTE E NÃO FICA BAGUNÇADO
                 if ID_CONTADOR:
                     sucesso, mensagem = vincular_contador_empresa(ID_CONTADOR, SQL.lastrowid)
                     if sucesso:
@@ -156,6 +176,7 @@ def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO, ID_
         if CONN:
             CONN.close()
 
+#VINCULAÇÃO DE EMPRESA A CONTADOR - INSERT NA TABELA CONTADOR_EMPRESA
 def vincular_contador_empresa(ID_CONTADOR, ID_EMPRESA):
     CONN = None
     try:
@@ -197,7 +218,11 @@ def vincular_contador_empresa(ID_CONTADOR, ID_EMPRESA):
     finally:
         if CONN:
             CONN.close()
+        #FIM - CADASTROS
 
+    #INICIO - UPDATES
+
+#VINCULAR ID_DRIVE A EMPRESA QUE ESTAVA COM CAMPO NULL
 def vincular_empresa_drive(ID_EMPRESA, ID_DRIVE):
     CONN = None
     try:
@@ -232,6 +257,10 @@ def vincular_empresa_drive(ID_EMPRESA, ID_DRIVE):
         if CONN:
             CONN.close()
 
+    #INICIO - DELETES
+        #DELETE DE CADASTROS
+
+#EXCLUSÃO DE REGISTRO DE CONTADOR - NÃO RETIRE OS TIMEOUTS - PASSÍVEL DE BLOCK NO BD
 def deletar_cadastro_contador(ID_CONTADOR,):
     CONN = None
     try:
@@ -269,6 +298,7 @@ def deletar_cadastro_contador(ID_CONTADOR,):
         if CONN:
             CONN.close()
 
+#EXCLUSÃO DE REGISTRO DE EMPRESA - NÃO RETIRE OS TIMEOUTS - PASSÍVEL DE BLOCK NO BD
 def deletar_cadastro_empresa(ID_EMPRESA,):
     CONN = None
     try:
@@ -305,7 +335,7 @@ def deletar_cadastro_empresa(ID_EMPRESA,):
     finally:
         if CONN:
             CONN.close()
-
+#EXLCUSÃO DE REGISTRO DE VÍNCULO DE EMPRESA E CONTADOR - NÃO RETIRE OS TIMEOUTS - PASSÍVEL DE BLOCK NO BD
 def deletar_vinculo_empresa_contador(ID_CONTADOR, ID_EMPRESA):
     CONN = None
     try:
@@ -345,3 +375,31 @@ def deletar_vinculo_empresa_contador(ID_CONTADOR, ID_EMPRESA):
     finally:
         if CONN:
             CONN.close()
+
+    #FIM - DELETE
+
+#FIM - FUNÇÕES SQL
+
+
+#INICIOS - FUNÇÕES GOOLGE DRIVE
+
+#INICIA SERVIÇO DE CONEXÃO A GOOGLE DRIVE - NECESSÁRIO "credentials.json" NA ROOT, ARQUIVO DEVE ESTAR VALIDADO NA CONTA DO DRIVE PELO GOOGLE CLOUD, 
+# CASO ESTEJA ELE JÁ VAI CRIAR NA ROOT O "token.json" QUE É A AUTH_KEY DO API E FUNCIONARÁ CORRETAMENTE
+#!!!!!!!!!!!!!!!COLOCA ESSES 2 JSON NO GIT IGNORE POR FAVOR, SE NÃO F, LITERALMENTE F, SÉRIO!!!!!!!!!!!!!!
+def get_drive_service():
+    creds = None
+    if os.path.exists("token.json"):
+        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                "credentials.json", SCOPES
+            )
+            creds = flow.run_local_server(port=0)
+        
+        with open("token.json", "w") as token:
+            token.write(creds.to_json())
+    return build("drive", "v3",  credentials=creds)
+

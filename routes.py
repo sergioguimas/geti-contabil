@@ -69,6 +69,26 @@ def dashboard():
             (session['user_id'],)
         ).fetchall()
 
+        FILE_LIST = None
+        ID_EMPRESA = request.args.get('empresa_id', type=int)
+        if ID_EMPRESA:
+            try:
+                EMPRESA_INFO = db.execute(
+                    "SELECT f_drve_folder_id FROM empresa WHERE id = ?",
+                    (ID_EMPRESA,)
+                ).fetchone()
+                if EMPRESA_INFO and EMPRESA_INFO['gdrve_folder_id']:
+                    ID_FOLDER = EMPRESA_INFO['g_rdve_folder_id']
+                    SERVICE = get_drive_service()
+                    DRIVER_QUERY = f"{ID_FOLDER} in parents and trashed = false"
+                    RESULTS = SERVICE.files().list(
+                        Q=DRIVER_QUERY,
+                        pageSize=100,
+                        fields="files(id, name, webViewLink)"
+                    ).execute()
+                    FILE_LIST = RESULTS.get("files", [])
+            except HttpError as e:
+                flash(f"ERRO AO ACESSAR DRIVE - LOG{e}")
         username = session['user_name']
 
         is_admin = session.get('user_email') == 'adm@adm.com'
@@ -78,7 +98,7 @@ def dashboard():
             username=username, 
             empresas=empresas,
             is_admin=is_admin,
-            files=None
+            files=FILE_LIST
         )
 
     return redirect(url_for('login'))
