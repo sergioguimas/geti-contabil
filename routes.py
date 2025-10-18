@@ -83,20 +83,20 @@ def dashboard():
                     "SELECT f_drve_folder_id FROM empresa WHERE id = ?",
                     (ID_EMPRESA,)
                 ).fetchone()
-                if EMPRESA_INFO and EMPRESA_INFO['gdrve_folder_id']:
-                    ID_FOLDER = EMPRESA_INFO['g_rdve_folder_id']
+                if EMPRESA_INFO and EMPRESA_INFO['g_drve_folder_id']:
+                    ID_FOLDER = EMPRESA_INFO['g_drve_folder_id']
                     SERVICE = get_drive_service()
-                    DRIVER_QUERY = f"{ID_FOLDER} in parents and trashed = false"
+                    DRIVER_QUERY = f"'{ID_FOLDER}' in parents and trashed = false"
                     RESULTS = SERVICE.files().list(
-                        Q=DRIVER_QUERY,
+                        q=DRIVER_QUERY,
                         pageSize=100,
                         fields="files(id, name, webViewLink)"
                     ).execute()
                     FILE_LIST = RESULTS.get("files", [])
             except HttpError as e:
                 flash(f"ERRO AO ACESSAR DRIVE - LOG{e}")
-        username = session['user_name']
 
+        username = session['user_name']
         is_admin = session.get('user_email') == 'adm@adm.com'
         
         return render_template(
