@@ -17,7 +17,7 @@
         </div>
 
         <div class="header-right">
-            <a href="{{ url_for('vinculos') }}" class="nav-link">
+            <a href="{{ url_for('admin_vinculos') }}" class="nav-link">
                 <img src="{{ url_for('static', filename='images/chain.png') }}" alt="Vincular" id="icon">
                 <span>Vinculos</span>
             </a>                 
@@ -43,6 +43,9 @@
                 </div>
             {% endif %}
         {% endwith %}
+
+        <h2>Cadastrar Contadores e Empresas</h2>
+        <p>Selecione o Contador/Empresa 'Admin' para criar um cadastro sem vínculos.</p>        
 
         <div class="form-wrapper">
             <div class="form-container">

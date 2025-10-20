@@ -2,7 +2,7 @@ import sqlite3
 from app import app
 from flask import render_template, request, redirect, url_for, session, g, flash
 from werkzeug.security import check_password_hash
-from models import cadastro_contador, cadastro_empresa, get_drive_service, pesquisa_pasta_drive_id_drive, pesquisa_pasta_drive_razao_social
+from models import cadastro_contador, cadastro_empresa, get_drive_service, pesquisa_pasta_drive_id_drive, pesquisa_pasta_drive_razao_social, vincular_contador_empresa, deletar_vinculo_empresa_contador
 import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -11,6 +11,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 DATABASE = 'usuarios.db'
+admin_email = os.getenv("ADMIN_EMAIL")
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -84,7 +85,7 @@ def dashboard():
             try:
                 #BUSCA ID DO DRIVE
                 ID_DRIVE = db.execute(
-                    "SELECT f_drve_folder_id FROM empresa WHERE id = ?",
+                    "SELECT g_drve_folder_id FROM empresa WHERE id = ?",
                     (ID_EMPRESA,)
                 ).fetchone()
                 FILE_LIST = pesquisa_pasta_drive_id_drive(ID_DRIVE)
@@ -93,7 +94,7 @@ def dashboard():
 #FIM - DRIVE
 
         username = session['user_name']
-        is_admin = session.get('user_email') == 'adm@adm.com'
+        is_admin = session.get('user_email') == admin_email
         
         return render_template(
             "dashboard.html", 
@@ -107,7 +108,7 @@ def dashboard():
 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin_page():
-    if session.get('user_email') != 'adm@adm.com':
+    if session.get('user_email') != admin_email:
         flash('Acesso não autorizado.', 'error')
         return redirect(url_for('dashboard'))
 
@@ -145,32 +146,52 @@ def admin_page():
     empresas = db.execute("SELECT id, nome_fantasia, razao_social FROM empresa ORDER BY nome_fantasia").fetchall()                
     return render_template("admin_cadastros.html", contadores=contadores, empresas=empresas)
 
-@app.route("/vinculos", methods=['GET', 'POST'])
-def vinculos():
-    if session.get('user_email') != 'adm@adm.com':
+@app.route("/admin/vinculos", methods=['GET', 'POST'])
+def admin_vinculos():
+    if session.get('user_email') != admin_email:
         flash('Acesso não autorizado.', 'error')
         return redirect(url_for('dashboard'))
+    
+    db = get_db()
+
+    if request.method == 'POST':
+        contador_id = request.form.get('contador_id')
+        empresa_id = request.form.get('empresa_id')
+        action = request.form.get('action')
+
+        if not contador_id or not empresa_id:
+            flash('Por favor, selecione um contador e uma empresa.', 'error')
+        else:
+            if action == 'vincular':
+                sucesso, mensagem = vincular_contador_empresa(contador_id, empresa_id)
+                flash(mensagem, 'success' if sucesso else 'error')
+            elif action == 'desvincular':
+                sucesso, mensagem = deletar_vinculo_empresa_contador(contador_id, empresa_id)
+                flash(mensagem, 'success' if sucesso else 'error')
         
-    if 'user_name' in session:
-        db = get_db()
-        empresas = db.execute(
-            """
-            SELECT e.id, e.nome_fantasia, e.razao_social
-            FROM empresa e
-            JOIN contador_empresa ce ON e.id = ce.id_empresa
-            WHERE ce.id_contador = ?
-            ORDER BY e.nome_fantasia
-            """,
-            (session['user_id'],)
-        ).fetchall()
+        return redirect(url_for('admin_vinculos'))
 
-        username = session['user_name']
+    contadores = db.execute("SELECT id, nome, email FROM contador ORDER BY nome").fetchall()
+    empresas = db.execute("SELECT id, nome_fantasia, razao_social FROM empresa ORDER BY nome_fantasia").fetchall()
 
-        is_admin = session.get('user_email') == ''
+    empresas_com_vinculos = db.execute("""
+        SELECT 
+            e.id, 
+            e.nome_fantasia, 
+            e.razao_social,
+            c.nome AS contador_nome,
+            c.email AS contador_email
+        FROM empresa e
+        LEFT JOIN contador_empresa ce ON e.id = ce.id_empresa
+        LEFT JOIN contador c ON ce.id_contador = c.id
+        ORDER BY e.nome_fantasia
+    """).fetchall()
+    
+    return render_template("admin_vinculo.html", contadores=contadores, empresas=empresas, empresas_vinculadas=empresas_com_vinculos)
 
-@app.route("/vincular", methods=['GET', 'POST'])
+@app.route("/drive", methods=['GET', 'POST'])
 def vincular_drive_page():
-    if session.get('user_email') != 'adm@adm.com':
+    if session.get('user_email') != admin_email:
         flash('Acesso não autorizado.', 'error')
         return redirect(url_for('dashboard'))
     
@@ -178,7 +199,7 @@ def vincular_drive_page():
 
     if request.method == 'POST':
         form_type = request.form.get('form_type')
-        NOME_DRIVE = request.form.get('nome_empresa')
+        NOME_DRIVE = request.form.get('nome_empresa_busca')
         if NOME_DRIVE:
             DRIVE_LIST = pesquisa_pasta_drive_razao_social(NOME_DRIVE)
             if not DRIVE_LIST:
@@ -187,7 +208,7 @@ def vincular_drive_page():
             flash('Digite um nome para a busca.', 'warning')
 
     db = get_db()
-    EMPRESAS = db.execute("SELECT id, razao_social FROM empresa ORDER BY razao_social").fetchall
+    EMPRESAS = db.execute("SELECT id, razao_social FROM empresa ORDER BY razao_social").fetchall()
 
     return render_template(
         "admin_vincular_drive.html", 

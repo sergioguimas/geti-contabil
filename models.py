@@ -15,6 +15,7 @@ from googleapiclient.errors import HttpError
 load_dotenv()
 
 DATABASE = "usuarios.db"
+admin_email = os.getenv("ADMIN_EMAIL")
 
 # COMEÇO -  FUNÇÕES AUXILIARES
 
@@ -160,11 +161,11 @@ def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO, ID_
                     SQL.execute("SELECT nome, email FROM contador WHERE id = ?", (ID_CONTADOR,))
                     resultado = SQL.fetchone()
                     #ARMAZENA O RESULTADO E VERIFICA SE É O CONTADOR ADMINISTRADOR
-                    if resultado and resultado['email'] == 'adm@adm.com':
+                    if resultado and resultado['email'] == admin_email:
                         #SE FOR, LIMPA O NOME ADMIN E CADASTRA A EMPRESA SEM VÍNCULO
                         ID_CONTADOR = None 
                         sucesso, mensagem = vincular_contador_empresa(ID_CONTADOR, SQL.lastrowid)
-                        return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada com sucesso! Porém, sem vinculo de contador.")
+                        return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada sem vinculo de contador com sucesso!")
                     else:
                         #SE NÃO FOR, RETORNA O NOME DO CONTADOR VINCULADO
                         nome_contador = resultado['nome']

@@ -80,3 +80,11 @@
 .flash.error {
     background-color: #dc3545;
 }
+
+#desvincular {
+    background-color: #dc3545;
+    margin-top: 10px;
+}
+#desvincular:hover {
+    background-color: #c82333;
+}
