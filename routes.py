@@ -75,14 +75,19 @@ def dashboard():
             (session['user_id'],)
         ).fetchall()
 
+#CONECTA AO DRIVE E PUXA OS ARQUIVOS
+        #VARIAVEL COM OS ARQUIVOS
         FILE_LIST = None
+        #PUXA ID DA EMPRESA DO FRONT
         ID_EMPRESA = request.args.get('empresa_id', type=int)
         if ID_EMPRESA:
             try:
+                #BUSCA ID DO DRIVE
                 EMPRESA_INFO = db.execute(
                     "SELECT f_drve_folder_id FROM empresa WHERE id = ?",
                     (ID_EMPRESA,)
                 ).fetchone()
+                #FAZ CONSULTA NO DRIVE DOS ARQUIVOS COM O ID
                 if EMPRESA_INFO and EMPRESA_INFO['g_drve_folder_id']:
                     ID_FOLDER = EMPRESA_INFO['g_drve_folder_id']
                     SERVICE = get_drive_service()
@@ -95,6 +100,7 @@ def dashboard():
                     FILE_LIST = RESULTS.get("files", [])
             except HttpError as e:
                 flash(f"ERRO AO ACESSAR DRIVE - LOG{e}")
+#FIM - DRIVE
 
         username = session['user_name']
         is_admin = session.get('user_email') == 'adm@adm.com'
