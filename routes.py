@@ -2,7 +2,7 @@ import sqlite3
 from app import app
 from flask import render_template, request, redirect, url_for, session, g, flash
 from werkzeug.security import check_password_hash
-from models import cadastro_contador, cadastro_empresa, get_drive_service, cons
+from models import cadastro_contador, cadastro_empresa, get_drive_service, pesquisa_pasta_drive_id_drive, pesquisa_pasta_drive_razao_social
 import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
