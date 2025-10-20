@@ -2,7 +2,7 @@ import sqlite3
 from app import app
 from flask import render_template, request, redirect, url_for, session, g, flash
 from werkzeug.security import check_password_hash
-from models import cadastro_contador, cadastro_empresa
+from models import cadastro_contador, cadastro_empresa, get_drive_service, cons
 import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -83,23 +83,13 @@ def dashboard():
         if ID_EMPRESA:
             try:
                 #BUSCA ID DO DRIVE
-                EMPRESA_INFO = db.execute(
+                ID_DRIVE = db.execute(
                     "SELECT f_drve_folder_id FROM empresa WHERE id = ?",
                     (ID_EMPRESA,)
                 ).fetchone()
-                #FAZ CONSULTA NO DRIVE DOS ARQUIVOS COM O ID
-                if EMPRESA_INFO and EMPRESA_INFO['g_drve_folder_id']:
-                    ID_FOLDER = EMPRESA_INFO['g_drve_folder_id']
-                    SERVICE = get_drive_service()
-                    DRIVER_QUERY = f"'{ID_FOLDER}' in parents and trashed = false"
-                    RESULTS = SERVICE.files().list(
-                        q=DRIVER_QUERY,
-                        pageSize=100,
-                        fields="files(id, name, webViewLink)"
-                    ).execute()
-                    FILE_LIST = RESULTS.get("files", [])
+                FILE_LIST = pesquisa_pasta_drive_id_drive(ID_DRIVE)
             except HttpError as e:
-                flash(f"ERRO AO ACESSAR DRIVE - LOG{e}")
+                return (False, "ERRO DE REQUISIÇÃO DRIVE")
 #FIM - DRIVE
 
         username = session['user_name']
@@ -178,6 +168,32 @@ def vinculos():
 
         is_admin = session.get('user_email') == ''
 
+@app.route("/vincular", methods=['GET', 'POST'])
+def vincular_drive_page():
+    if session.get('user_email') != 'adm@adm.com':
+        flash('Acesso não autorizado.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    DRIVE_LIST = []
+
+    if request.method == 'POST':
+        form_type = request.form.get('form_type')
+        NOME_DRIVE = request.form.get('nome_empresa')
+        if NOME_DRIVE:
+            DRIVE_LIST = pesquisa_pasta_drive_razao_social(NOME_DRIVE)
+            if not DRIVE_LIST:
+                flash(f'Nenhuma pasta com o nome:{NOME_DRIVE}, foi encontrada no Google Drive', 'info')
+        else:
+            flash('Digite um nome para a busca.', 'warning')
+
+    db = get_db()
+    EMPRESAS = db.execute("SELECT id, razao_social FROM empresa ORDER BY razao_social").fetchall
+
+    return render_template(
+        "admin_vincular_drive.html", 
+        empresas=EMPRESAS,
+        pastas = DRIVE_LIST
+        )
 @app.route("/logout")
 def logout():
     session.clear()

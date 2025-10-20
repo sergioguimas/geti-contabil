@@ -387,19 +387,59 @@ def deletar_vinculo_empresa_contador(ID_CONTADOR, ID_EMPRESA):
 # CASO ESTEJA ELE JÁ VAI CRIAR NA ROOT O "token.json" QUE É A AUTH_KEY DO API E FUNCIONARÁ CORRETAMENTE
 #!!!!!!!!!!!!!!!COLOCA ESSES 2 JSON NO GIT IGNORE POR FAVOR, SE NÃO F, LITERALMENTE F, SÉRIO!!!!!!!!!!!!!!
 def get_drive_service():
-    creds = None
+    CREDENCIAIS = None
     if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
+        CREDENCIAIS = Credentials.from_authorized_user_file("token.json", SCOPES)
+    if not CREDENCIAIS or not CREDENCIAIS.valid:
+        if CREDENCIAIS and CREDENCIAIS.expired and CREDENCIAIS.refresh_token:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 "credentials.json", SCOPES
             )
-            creds = flow.run_local_server(port=0)
+            CREDENCIAIS = flow.run_local_server(port=0)
         
         with open("token.json", "w") as token:
-            token.write(creds.to_json())
-    return build("drive", "v3",  credentials=creds)
+            token.write(CREDENCIAIS.to_json())
+    return build("drive", "v3",  credentials=CREDENCIAIS)
 
+#PESQUISA PASTAS NO DRIVE PELA RAZÃO SOCIAL
+def pesquisa_pasta_drive_razao_social(NOME_DRIVE):
+    DRIVE_LIST = None
+    try:
+        SERVICE = get_drive_service()
+        CONSULTA_DRIVE = f"mimeType='application/vnd.google-apps.folder' and name contains '{NOME_DRIVE}' and trashed = false"
+        RESULT  = SERVICE.files().list(
+            q=CONSULTA_DRIVE,
+            pageSize=100,
+            fields="files(id, name, webViewLink)"
+        ).execute()
+        DRIVE_LIST = RESULT.get('files', [])
+        return (True, DRIVE_LIST)
+    except HttpError as e:
+        print(f"ERRO AO CONSULTAR DRIVE - LOG:{e}")
+        DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        with open(f"ERROR_CONSULTA_DRIVE_{DATE_LOG}", "w") as txt_log:
+            txt_log.write(f"ERROR_CONSULTA_DRIVE_LOG_{e}")
+            return (False, f"ERROR_CONSULTA_DRIVE_LOG:{e}")
+        
+def pesquisa_pasta_drive_id_drive(ID_DRIVE):
+    FILE_LIST = None
+    try:
+        if ID_DRIVE and ID_DRIVE['g_drve_folder_id']:
+            ID_DRIVE = ID_DRIVE['g_drve_folder_id']
+            SERVICE = get_drive_service()
+            CONSULTA_DRIVE = f"'{ID_DRIVE}' in parents and trashed = false"
+            RESULTS = SERVICE.files().list(
+                q=CONSULTA_DRIVE,
+                pageSize=100,
+                fields="files(id, name, webViewLink)"
+                ).execute()
+        FILE_LIST = RESULTS.get("files", [])
+        return(True, FILE_LIST)
+    except HttpError as e:
+            print(f"ERRO AO ACESSAR DRIVE - LOG{e}")
+            DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            with open(f"ERROR_CONSULTA_DRIVE_{DATE_LOG}", "w") as txt_log:
+                txt_log.write(f"ERROR_CONSULTA_DRIVE_LOG_{e}")
+                return (False, f"ERROR_CONSULTA_DRIVE_LOG:{e}")

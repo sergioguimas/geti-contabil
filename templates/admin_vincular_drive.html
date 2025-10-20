@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Vincular Pasta do Drive</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <h1>Vincular Pasta do Drive a uma Empresa</h1>
+    <p>Use o formulário abaixo para encontrar pastas no Google Drive.</p>
+
+    <!-- Formulário de Busca -->
+    <form method="POST" action="{{ url_for('vincular_drive_page') }}">
+        <input type="text" name="nome_empresa_busca" placeholder="Digite o nome da empresa para buscar no Drive" size="50">
+        <button type="submit">Buscar Pastas</button>
+    </form>
+    <hr>
+
+    <!-- Exibição de Mensagens (flash) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+
+    <!-- Seção de Resultados da Busca -->
+    {% if pastas %}
+        <h2>Resultados da Busca no Drive:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome da Pasta no Drive</th>
+                    <th>Vincular à Empresa</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop para cada pasta encontrada -->
+                {% for pasta in pastas %}
+                    <tr>
+                        <td>
+                            <a href="{{ pasta.webViewLink }}" target="_blank">{{ pasta.name }}</a>
+                            <br>
+                            <small>ID: {{ pasta.id }}</small>
+                        </td>
+                        <!-- Formulário para vincular esta pasta específica -->
+                        <form action="{{ url_for('salvar_vinculo_drive') }}" method="POST">
+                            <td>
+                                <!-- Inputs ocultos para enviar os IDs -->
+                                <input type="hidden" name="folder_id" value="{{ pasta.id }}">
+                                
+                                <select name="empresa_id" required>
+                                    <option value="">-- Selecione a empresa --</option>
+                                    <!-- Loop para popular o menu com as empresas do seu BD -->
+                                    {% for empresa in empresas %}
+                                        <option value="{{ empresa.id }}">{{ empresa.razao_social }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <button type="submit">Vincular</button>
+                            </td>
+                        </form>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+</body>
+</html>
