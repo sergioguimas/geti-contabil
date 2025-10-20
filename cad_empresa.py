@@ -1,4 +1,6 @@
-import sqlite3
+#codigo teste para adicionar empresas no banco
+#obsoleto
+"""import sqlite3
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -50,4 +52,4 @@ for empresa in empresas_para_adicionar:
 connection.commit()
 connection.close()
 
-print("\nProcesso finalizado!")
+print("\nProcesso finalizado!")"""

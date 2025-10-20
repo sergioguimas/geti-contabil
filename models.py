@@ -91,17 +91,23 @@ def cadastro_contador(NOME, EMAIL, SENHA, EMPRESA=None):
                     ID_ENTIDADE=SQL.lastrowid,
                     DATA = DATA_LOG
                 )
+                #VERIFICAÇÃO DE VINCULAÇÃO A EMPRESA
                 if EMPRESA:
+                    #EXECUTA A FUNÇÃO SQL PARA BUSCAR A EMPRESA
                     SQL.execute("SELECT nome_fantasia FROM empresa WHERE id = ?", (EMPRESA,))
                     info_empresa = SQL.fetchone()
+                    #ARMAZENA O RESULTADO E VERIFICA SE É A EMPRESA ADMINISTRADORA
                     if info_empresa and info_empresa['nome_fantasia'] == 'Admin':
+                        #SE FOR, LIMPA O NOME ADMIN E CADASTRA O CONTADOR SEM VÍNCULO
                         EMPRESA = None
                         sucesso, mensagem = vincular_contador_empresa(SQL.lastrowid, EMPRESA)
                         return (True, f"Contador '{NOME}' cadastrado sem vinculo de empresa!")
                     else:
+                        #SE NAO FOR, EXECUTA A VINCULAÇÃO E RETORNA O NOME DA EMPRESA VINCULADA
                         sucesso, mensagem = vincular_contador_empresa(SQL.lastrowid, EMPRESA)
+                        nome_empresa = info_empresa['nome_fantasia']
+                        #VERIFICA SE HOUVE SUCESSO NA VINCULAÇÃO
                         if sucesso:
-                            nome_empresa = info_empresa['nome_fantasia']
                             return (True, f"Contador '{NOME}' cadastrado e vinculado na empresa {nome_empresa} com sucesso!")
                         else:
                             return (True, f"Contador '{NOME}' cadastrado com sucesso! Porém, falha ao vincular na empresa.")
@@ -148,22 +154,25 @@ def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO, ID_
                     ID_ENTIDADE=SQL.lastrowid,
                     DATA=DATA_LOG
                 )
-                #QUE HADUKEN É ESSE MEU NOBRE? SEPARA BONITIM AE, DEIXA DESORGANIZADO NÃO, SE NÃO DEPOIS QUEBRA A CABEÇA PRA CONSERTAR
-                #DEPOIS VOU ALTERAR ISSO AQUI, TA RUIM DE ENTENDER, MALS AE, ADICIONAR OS LOG TAMBÉM - FAZER UAM FUNÇÃO PRA ISSO E SO PUXAR
-                #FICA MELHOR VISUALMENTE E NÃO FICA BAGUNÇADO
+                #VERIFICAÇÃO SE TEM CONTADOR SELECIONADO
                 if ID_CONTADOR:
-                    sucesso, mensagem = vincular_contador_empresa(ID_CONTADOR, SQL.lastrowid)
-                    if sucesso:
-                        SQL.execute("SELECT nome, email FROM contador WHERE id = ?", (ID_CONTADOR,))
-                        resultado = SQL.fetchone()
-                        if resultado and resultado['email'] == 'adm@adm.com':
-                            return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada com sucesso! Porém, sem vinculo de contador.")
-                        else:
-                            nome_contador = resultado['nome']
-                            vincular_contador_empresa(ID_CONTADOR, SQL.lastrowid)
-                            return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada e vinculada ao contador '{nome_contador}' com sucesso!")
+                    #EXECUTA A FUNÇÃO SQL PARA BUSCAR O CONTADOR
+                    SQL.execute("SELECT nome, email FROM contador WHERE id = ?", (ID_CONTADOR,))
+                    resultado = SQL.fetchone()
+                    #ARMAZENA O RESULTADO E VERIFICA SE É O CONTADOR ADMINISTRADOR
+                    if resultado and resultado['email'] == 'adm@adm.com':
+                        #SE FOR, LIMPA O NOME ADMIN E CADASTRA A EMPRESA SEM VÍNCULO
+                        ID_CONTADOR = None 
+                        sucesso, mensagem = vincular_contador_empresa(ID_CONTADOR, SQL.lastrowid)
+                        return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada com sucesso! Porém, sem vinculo de contador.")
                     else:
-                        return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada com sucesso! Porém, falha ao vincular ao contador: {mensagem}")
+                        #SE NÃO FOR, RETORNA O NOME DO CONTADOR VINCULADO
+                        nome_contador = resultado['nome']
+                        sucesso, mensagem = vincular_contador_empresa(ID_CONTADOR, SQL.lastrowid)
+                        return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada e vinculada ao contador '{nome_contador}' com sucesso!")
+                else:
+                    #SE HOUVER FALHA NA VINCULAÇÃO, RETORNA A MENSAGEM DE ERRO
+                    return (True, f"Empresa '{FANTASIA or RAZAO_SOCIAL}' cadastrada com sucesso! Porém, falha ao vincular ao contador: {mensagem}")
             else:
                 return (False, f"CNPJ: {CNPJ} é inválido!")
     except sqlite3.Error as e:
