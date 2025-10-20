@@ -1,4 +1,6 @@
-from models import cadastro_contador
+#codigo teste para adicionar contadores no banco
+#obsoleto
+'''from models import cadastro_contador
 
 print("--- Criador de Usuário Contador ---")
 
