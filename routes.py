@@ -64,17 +64,30 @@ def login():
 @app.route("/dashboard")
 def dashboard():
     if 'user_name' in session:
-        db = get_db()
-        empresas = db.execute(
-            """
-            SELECT e.id, e.nome_fantasia, e.razao_social
-            FROM empresa e
-            JOIN contador_empresa ce ON e.id = ce.id_empresa
-            WHERE ce.id_contador = ?
-            ORDER BY e.nome_fantasia
-            """,
-            (session['user_id'],)
-        ).fetchall()
+        if session.get('user_email') != admin_email:
+            db = get_db()
+            empresas = db.execute(
+                """
+                SELECT e.id, e.nome_fantasia, e.razao_social
+                FROM empresa e
+                JOIN contador_empresa ce ON e.id = ce.id_empresa
+                WHERE ce.id_contador = ?
+                ORDER BY e.nome_fantasia
+                """,
+                (session['user_id'],)
+            ).fetchall()
+        else:
+            db = get_db()
+            empresas = db.execute(
+                """
+                SELECT e.id, e.nome_fantasia, e.razao_social
+                FROM empresa e
+                JOIN contador_empresa ce ON e.id = ce.id_empresa
+                ORDER BY e.nome_fantasia
+                """
+            ).fetchall()
+
+        
 
 #CONECTA AO DRIVE E PUXA OS ARQUIVOS
         #VARIAVEL COM OS ARQUIVOS
