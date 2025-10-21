@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Painel Administrativo</title>
+    <title>Painel Administrativo - Vínculos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 </head>
+
 <body>
     <header>
         <div class="header-left">
@@ -17,6 +18,10 @@
         </div>
 
         <div class="header-right">
+            <a href="{{ url_for('admin_page') }}" class="nav-link">
+                <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Admin" id="icon">
+                <span>Cadastros</span>
+            </a>
             <a href="{{ url_for('dashboard') }}" class="nav-link">
                 <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
                 <span>Arquivos</span>
@@ -28,5 +33,84 @@
         </div>
     </header>    
     
+    <div class="admin-container">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <h2>Gerenciar Vínculos</h2>
+        <p>Aqui você pode gerenciar os vínculos entre contadores e clientes.</p>
+        <div class="form-wrapper">
+            
+            <div class="form-container">
+                <h2>Vincular ou Desvincular</h2>
+                <form method="POST" action="{{ url_for('admin_vinculos') }}">
+                    
+                    <label for="empresa_id">Selecione a Empresa:</label>
+                    <select name="empresa_id" id="empresa_id" required>
+                        <option value="">-- Selecione uma empresa --</option>
+                        {% for empresa in empresas %}
+                            <option value="{{ empresa.id }}">
+                                {{ empresa.nome_fantasia or empresa.razao_social }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <br><hr><br>
+                    
+                    <label for="contador_id">Selecione o contador:</label>
+                    <select name="contador_id" id="contador_id" required>
+                        <option value="">-- Selecione um contador --</option>
+                        {% for contador in contadores %}
+                            <option value="{{ contador.id }}">
+                                {{ contador.nome }} ({{ contador.email }})
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" name="action" value="vincular">Vincular</button>
+                    <button type="submit" name="action" value="desvincular" id="desvincular">Desvincular</button>
+                
+                </form>
+            </div>
+
+            <div class="form-container">
+                <h2>Empresas e Seus Vínculos</h2>
+                
+                <table style="width: 100%; border-collapse: collapse;" border="1">
+                    <thead>
+                        <tr>
+                            <th style="padding: 8px; text-align: left;">Empresa</th>
+                            <th style="padding: 8px; text-align: left;">Contador Vinculado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for empresa in empresas_vinculadas %}
+                        <tr>
+                            <td style="padding: 8px;">
+                                {{ empresa.nome_fantasia or empresa.razao_social }}
+                            </td>
+                            <td style="padding: 8px;">
+                                {% if empresa.contador_nome %}
+                                    {{ empresa.contador_nome }} ({{ empresa.contador_email }})
+                                {% else %}
+                                    <span style="color: #888;">Nenhum contador vinculado</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
