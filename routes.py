@@ -84,7 +84,7 @@ def dashboard():
             try:
                 #BUSCA ID DO DRIVE
                 ID_DRIVE = db.execute(
-                    "SELECT f_drve_folder_id FROM empresa WHERE id = ?",
+                    "SELECT g_drve_folder_id FROM empresa WHERE id = ?",
                     (ID_EMPRESA,)
                 ).fetchone()
                 FILE_LIST = pesquisa_pasta_drive_id_drive(ID_DRIVE)
