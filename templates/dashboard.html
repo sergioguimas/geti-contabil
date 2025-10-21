@@ -59,7 +59,17 @@
                 <ul>
                     {% for file in files %}
                         <li>
-                            <a href="{{ file.webViewLink }}" target="_blank">{{ file.name }}</a>
+                            <img src="{{ file.iconLink}}">
+
+                            {% if file.mimeType == 'application/vnd.google-apps.folder'%}
+
+                                <a href="{{ url_for('dashboard', folder_id=file.id) }}">{{ file.name}}</a>
+
+                            {% else %}
+
+                                <a href="{{ file.webViewLink }}" target="_blank">{{ file.name }}</a>
+
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>

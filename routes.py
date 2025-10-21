@@ -79,23 +79,31 @@ def dashboard():
 #CONECTA AO DRIVE E PUXA OS ARQUIVOS
         #VARIAVEL COM OS ARQUIVOS
         FILE_LIST = None
+        #VARIÁVEL COM ID
+        ID_SELECT = None
         #PUXA ID DA EMPRESA DO FRONT
         ID_EMPRESA = request.args.get('empresa_id', type=int)
-        if ID_EMPRESA:
-            try:
-                #BUSCA ID DO DRIVE
+        #PUXA ID DA PASTA QUE ELE CLICOU
+        ID_PASTA_CLICADA = request.args.get('folder_id', type=str)
+        #VERIFICA SE ELE CLICOU EM ALGO PRA REDIRECIONAR
+        try:
+            if ID_PASTA_CLICADA:
+                ID_SELECT = ID_PASTA_CLICADA
+            elif ID_EMPRESA:
                 ID_DRIVE = db.execute(
                     "SELECT g_drve_folder_id FROM empresa WHERE id = ?",
                     (ID_EMPRESA,)
                 ).fetchone()
-                sucesso, FILES = pesquisa_pasta_drive_id_drive(ID_DRIVE)
-
+                if ID_DRIVE and ID_DRIVE['g_drve_folder_id']:
+                    ID_SELECT = ID_DRIVE['g_drve_folder_id']
+            if ID_SELECT:
+                sucesso, FILES = pesquisa_pasta_drive_id_drive(ID_SELECT)
                 if sucesso:
                     FILE_LIST = FILES
                 else:
                     print(f"Erro ao buscar: {FILES}")
-            except HttpError as e:
-                return (False, "ERRO DE REQUISIÇÃO DRIVE")
+        except HttpError as e:
+            return (False, "ERRO DE REQUISIÇÃO DRIVE")
 #FIM - DRIVE
 
         username = session['user_name']

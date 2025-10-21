@@ -423,7 +423,7 @@ def pesquisa_pasta_drive_razao_social(NOME_DRIVE):
         RESULT  = SERVICE.files().list(
             q=CONSULTA_DRIVE,
             pageSize=100,
-            fields="files(id, name, webViewLink)"
+            fields="files(id, name, webViewLink, iconLink, webContentLink, mimeType)"
         ).execute()
         DRIVE_LIST = RESULT.get('files', [])
         return (True, DRIVE_LIST)
@@ -438,17 +438,18 @@ def pesquisa_pasta_drive_id_drive(ID_DRIVE):
     FILE_LIST = None
     RESULTS = {}
     try:
-        if ID_DRIVE and ID_DRIVE['g_drve_folder_id']:
-            ID_DRIVE = ID_DRIVE['g_drve_folder_id']
+        if ID_DRIVE:
             SERVICE = get_drive_service()
             CONSULTA_DRIVE = f"'{ID_DRIVE}' in parents and trashed = false"
             RESULTS = SERVICE.files().list(
                 q=CONSULTA_DRIVE,
                 pageSize=100,
-                fields="files(id, name, webViewLink)"
+                fields="files(id, name, webViewLink, iconLink, webContentLink, mimeType)"
                 ).execute()
-        FILE_LIST = RESULTS.get("files", [])
-        return(True, FILE_LIST)
+            FILE_LIST = RESULTS.get("files", [])
+            return(True, FILE_LIST)
+        else:
+            return(True, [])
     except HttpError as e:
             print(f"ERRO AO ACESSAR DRIVE - LOG{e}")
             DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
