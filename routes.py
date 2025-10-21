@@ -88,7 +88,12 @@ def dashboard():
                     "SELECT g_drve_folder_id FROM empresa WHERE id = ?",
                     (ID_EMPRESA,)
                 ).fetchone()
-                FILE_LIST = pesquisa_pasta_drive_id_drive(ID_DRIVE)
+                sucesso, FILES = pesquisa_pasta_drive_id_drive(ID_DRIVE)
+
+                if sucesso:
+                    FILE_LIST = FILES
+                else:
+                    print(f"Erro ao buscar: {FILES}")
             except HttpError as e:
                 return (False, "ERRO DE REQUISIÇÃO DRIVE")
 #FIM - DRIVE

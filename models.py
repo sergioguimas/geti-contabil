@@ -15,6 +15,7 @@ from googleapiclient.errors import HttpError
 load_dotenv()
 
 DATABASE = "usuarios.db"
+SCOPES = ["https://www.googleapis.com/auth/drive"]
 admin_email = os.getenv("ADMIN_EMAIL")
 
 # COMEÇO -  FUNÇÕES AUXILIARES
@@ -402,7 +403,7 @@ def get_drive_service():
         CREDENCIAIS = Credentials.from_authorized_user_file("token.json", SCOPES)
     if not CREDENCIAIS or not CREDENCIAIS.valid:
         if CREDENCIAIS and CREDENCIAIS.expired and CREDENCIAIS.refresh_token:
-            creds.refresh(Request())
+            CREDENCIAIS.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 "credentials.json", SCOPES
