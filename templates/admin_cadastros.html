@@ -44,8 +44,7 @@
             {% endif %}
         {% endwith %}
 
-        <h2>Cadastrar Contadores e Empresas</h2>
-        <p>Selecione o Contador/Empresa 'Admin' para criar um cadastro sem vínculos.</p>        
+        <h2 align="center">Cadastrar Contadores e Empresas</h2>      
 
         <div class="form-wrapper">
             <div class="form-container">
@@ -54,15 +53,15 @@
                     <input type="hidden" name="form_type" value="contador">
                     
                     <label for="nome">Nome:</label>
-                    <input type="text" id="nome" name="nome" required>
+                    <input type="text" id="nome" name="nome" placeholder="*Obrigatório" required>
                     
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" placeholder="*Obrigatório" required>
                     
                     <label for="senha">Senha:</label>
-                    <input type="password" id="senha" name="senha" required>
+                    <input type="password" id="senha" name="senha" placeholder="*Obrigatório" required>
 
-                    <label for="empresa_id">Atribuir a uma Empresa (Opcional):</label>
+                    <label for="empresa_id">Atribuir a uma Empresa: <br> <small>(Admin para vazio)</small></label>
                     <select name="empresa_id" id="empresa_id">
                         {% for empresa in empresas %}
                             <option value="{{ empresa.id }}">
@@ -80,24 +79,24 @@
                     <input type="hidden" name="form_type" value="empresa">
                     
                     <label for="razao_social">Razão Social:</label>
-                    <input type="text" id="razao_social" name="razao_social" required>
+                    <input type="text" id="razao_social" name="razao_social" placeholder="*Obrigatório" required>
                     
                     <label for="nome_fantasia">Nome Fantasia:</label>
-                    <input type="text" id="nome_fantasia" name="nome_fantasia">
+                    <input type="text" id="nome_fantasia" name="nome_fantasia" placeholder="*Opcional">
                     
                     <label for="cnpj">CNPJ:</label>
-                    <input type="text" id="cnpj" name="cnpj" required>
+                    <input type="text" id="cnpj" name="cnpj" placeholder="*Obrigatório" required>
                     
                     <label for="empresa_email">Email da Empresa:</label>
-                    <input type="email" id="empresa_email" name="empresa_email" required>
+                    <input type="email" id="empresa_email" name="empresa_email" placeholder="*Obrigatório" required>
                     
                     <label for="contato">Contato (Telefone):</label>
-                    <input type="text" id="contato" name="contato" required>
+                    <input type="text" id="contato" name="contato" placeholder="*Obrigatório" required>
 
                     <label for="drive_id">ID do Google Drive:</label>
-                    <input type="text" id="drive_id" name="drive_id" required>
+                    <input type="text" id="drive_id" name="drive_id" placeholder="*Obrigatório" required>
                     
-                    <label for="contador_id">Atribuir a um Contador (Opcional):</label>
+                    <label for="contador_id">Atribuir a um Contador: <br> <small>(Admin para vazio)</small></label>
                     <select name="contador_id" id="contador_id">
                         {% for contador in contadores %}
                             <option value="{{ contador.id }}">
