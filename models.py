@@ -424,10 +424,10 @@ def pesquisa_pasta_drive_razao_social(NOME_DRIVE):
         RESULT  = SERVICE.files().list(
             q=CONSULTA_DRIVE,
             pageSize=100,
-            fields="files(id, name, webViewLink, iconLink, webContentLink, mimeType)"
+            fields="files(id, name, webViewLink, iconLink, mimeType)"
         ).execute()
         DRIVE_LIST = RESULT.get('files', [])
-        return (True, DRIVE_LIST)
+        return (DRIVE_LIST)
     except HttpError as e:
         print(f"ERRO AO CONSULTAR DRIVE - LOG:{e}")
         DATE_LOG = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

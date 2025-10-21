@@ -25,6 +25,10 @@
                     <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Admin" id="icon">
                     <span>Admin</span>
                 </a>
+                <a href="{{ url_for('vincular_drive_page') }}" class="nav-link">
+                    <img src="{{ url_for('static', filename='images/settings.png') }}" alt="drive" id="icon">
+                    <span>Vincular Drive</span>
+                </a>
             {% endif %}        
             <a href="{{ url_for('logout') }}" id="sair">
                 <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Sair" id="icon">

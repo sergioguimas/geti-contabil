@@ -224,22 +224,18 @@ def vincular_drive_page():
     DRIVE_LIST = []
 
     if request.method == 'POST':
-        form_type = request.form.get('form_type')
         NOME_DRIVE = request.form.get('nome_empresa_busca')
         if NOME_DRIVE:
             DRIVE_LIST = pesquisa_pasta_drive_razao_social(NOME_DRIVE)
-            if not DRIVE_LIST:
-                flash(f'Nenhuma pasta com o nome:{NOME_DRIVE}, foi encontrada no Google Drive', 'info')
         else:
             flash('Digite um nome para a busca.', 'warning')
-
     db = get_db()
     EMPRESAS = db.execute("SELECT id, razao_social FROM empresa ORDER BY razao_social").fetchall()
 
     return render_template(
         "admin_vincular_drive.html", 
         empresas=EMPRESAS,
-        pastas = DRIVE_LIST
+        files = DRIVE_LIST
         )
 @app.route("/logout")
 def logout():
