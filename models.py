@@ -435,6 +435,7 @@ def pesquisa_pasta_drive_razao_social(NOME_DRIVE):
         
 def pesquisa_pasta_drive_id_drive(ID_DRIVE):
     FILE_LIST = None
+    RESULTS = {}
     try:
         if ID_DRIVE and ID_DRIVE['g_drve_folder_id']:
             ID_DRIVE = ID_DRIVE['g_drve_folder_id']
