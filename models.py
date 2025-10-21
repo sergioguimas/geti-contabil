@@ -142,6 +142,7 @@ def cadastro_empresa(RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO, ID_
                 return (False, "Este ID do Google Drive já está associado a outra empresa.")
             elif valida_cnpj(CNPJ) == True:
                 CNPJ = re.sub(r'[^\d]', '', CNPJ)
+                CONTATO = re.sub(r'[^\d]', '', CONTATO)
                 SQL_INSERT = "INSERT INTO empresa (razao_social, cnpj, g_drve_folder_id, nome_fantasia, email, contato) VALUES (?, ?, ?, ?, ?, ?);"
                 VALUES = (RAZAO_SOCIAL, CNPJ, ID_DRIVE, FANTASIA, EMAIL, CONTATO)
                 SQL.execute(SQL_INSERT, VALUES)
