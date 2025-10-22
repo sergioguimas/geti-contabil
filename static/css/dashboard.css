@@ -142,6 +142,9 @@ header {
 .conteudo-principal {
     flex-grow: 1;
     padding: 20px 40px;
+    background-color: #ffffff62;
+    border-radius: 15px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
 .tabela_drive{
