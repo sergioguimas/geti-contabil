@@ -473,3 +473,26 @@ def pesquisa_pasta_drive_id_drive(ID_DRIVE, order_by_param="folder, name"):
             with open(f"ERROR_CONSULTA_DRIVE_{DATE_LOG}", "w") as txt_log:
                 txt_log.write(f"ERROR_CONSULTA_DRIVE_LOG_{e}")
                 return (False, f"ERROR_CONSULTA_DRIVE_LOG:{e}")
+
+#Busca os metadados de um ARQUIVO (nome, mimeType) para download.
+def get_file_details_for_download(ID_FILE):
+    try:
+        SERVICE = get_drive_service()
+        file_metadata = SERVICE.files().get(
+            fileId=ID_FILE,
+            fields="name, mimeType"
+        ).execute()
+        return (True, file_metadata)
+    except HttpError as e:
+        print(f"ERRO AO OBTER METADADOS DO ARQUIVO - LOG:{e}")
+        return (False, f"ERROR_GET_FILE_METADATA_LOG:{e}")
+
+#Retorna o objeto de requisição para baixar a mídia (conteúdo) do arquivo.
+def get_file_media(ID_FILE):
+    try:
+        SERVICE = get_drive_service()
+        request = SERVICE.files().get_media(fileId=ID_FILE)
+        return (True, request)
+    except HttpError as e:
+        print(f"ERRO AO OBTER MÍDIA DO ARQUIVO - LOG:{e}")
+        return (False, f"ERROR_GET_FILE_MEDIA_LOG:{e}")            

@@ -97,7 +97,7 @@
                         {% if file.mimeType == 'application/vnd.google-apps.folder'%}
                             href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=file.id, sort=current_sort) }}"
                         {% else %}
-                            href="{{ file.webViewLink }}" target="_blank"
+                            href="{{ url_for('download_file', file_id=file.id) }}"
                         {% endif %}
                         >
                             <img src="{{ file.iconLink}}">

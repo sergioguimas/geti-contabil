@@ -1,9 +1,19 @@
 import sqlite3
-from app import app
-from flask import render_template, request, redirect, url_for, session, g, flash
-from werkzeug.security import check_password_hash
-from models import cadastro_contador, cadastro_empresa, get_drive_service, pesquisa_pasta_drive_id_drive, pesquisa_pasta_drive_razao_social, vincular_contador_empresa, deletar_vinculo_empresa_contador, get_folder_details
+import io
 import os.path
+import zipfile
+from app import app
+from flask import (
+    render_template, request, redirect, url_for, session, g, flash, send_file, Response
+)
+from werkzeug.security import check_password_hash
+from googleapiclient.http import MediaIoBaseDownload
+from models import (
+    cadastro_contador, cadastro_empresa, get_drive_service, 
+    pesquisa_pasta_drive_id_drive, pesquisa_pasta_drive_razao_social, 
+    vincular_contador_empresa, deletar_vinculo_empresa_contador,
+    get_folder_details, get_file_details_for_download, get_file_media
+)
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -277,6 +287,116 @@ def vincular_drive_page():
         empresas=EMPRESAS,
         files = DRIVE_LIST
         )
+
+@app.route("/download/<string:file_id>")
+def download_file(file_id):
+    if 'user_name' not in session:
+        return redirect(url_for('login'))
+    
+    try:
+        # 1. Buscar Metadados (Nome, Tipo)
+        sucesso_meta, metadata = get_file_details_for_download(file_id)
+        if not sucesso_meta:
+            flash(f"Não foi possível obter os metadados do arquivo: {metadata}", "error")
+            # Retorna o usuário para a página de onde ele veio
+            return redirect(request.referrer or url_for('dashboard'))
+
+        # 2. Buscar a Mídia (o conteúdo)
+        sucesso_media, request_media = get_file_media(file_id)
+        if not sucesso_media:
+            flash(f"Não foi possível baixar o arquivo: {request_media}", "error")
+            return redirect(request.referrer or url_for('dashboard'))
+        
+        # 3. Baixar o arquivo para um buffer em memória (BytesIO)
+        fh = io.BytesIO()
+        downloader = MediaIoBaseDownload(fh, request_media)
+        
+        done = False
+        while done is False:
+            status, done = downloader.next_chunk()
+            # print(f"Download {int(status.progress() * 100)}%.") # Útil para debug
+
+        fh.seek(0) # Retorna ao início do buffer
+
+        # 4. Enviar o arquivo para o usuário
+        return send_file(
+            fh,
+            mimetype=metadata['mimeType'],
+            download_name=metadata['name'], # O nome que o usuário verá
+            as_attachment=True # Força o download
+        )
+
+    except HttpError as e:
+        flash(f"Erro no Google Drive ao tentar baixar o arquivo: {e}", "error")
+        return redirect(request.referrer or url_for('dashboard'))
+
+@app.route("/download/batch", methods=["POST"])
+def download_batch():
+    if 'user_name' not in session:
+        return redirect(url_for('login'))
+
+    # 1. Pega a lista de IDs dos checkboxes marcados
+    file_ids = request.form.getlist("file_ids")
+
+    if not file_ids:
+        flash("Nenhum arquivo foi selecionado para download.", "error")
+        return redirect(request.referrer or url_for('dashboard'))
+
+    # 2. Cria um buffer em memória para o arquivo Zip
+    zip_buffer = io.BytesIO()
+
+    try:
+        # 3. Cria o arquivo Zip em modo de escrita
+        #    zipfile.ZIP_DEFLATED habilita a compressão
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            
+            # 4. Loop para cada arquivo selecionado
+            for file_id in file_ids:
+                
+                # A. Pega o nome do arquivo
+                sucesso_meta, metadata = get_file_details_for_download(file_id)
+                if not sucesso_meta:
+                    print(f"Erro ao buscar metadados do {file_id}: {metadata}")
+                    continue # Pula este arquivo se der erro
+
+                # B. Pega o conteúdo (mídia)
+                sucesso_media, request_media = get_file_media(file_id)
+                if not sucesso_media:
+                    print(f"Erro ao buscar mídia do {file_id}: {request_media}")
+                    continue # Pula este arquivo
+
+                # C. Baixa o arquivo para um buffer temporário
+                file_buffer = io.BytesIO()
+                downloader = MediaIoBaseDownload(file_buffer, request_media)
+                done = False
+                while done is False:
+                    status, done = downloader.next_chunk()
+                
+                file_buffer.seek(0) # Retorna ao início do buffer do arquivo
+
+                # D. Escreve o conteúdo do arquivo no Zip
+                zipf.writestr(metadata['name'], file_buffer.read())
+                
+                file_buffer.close() # Libera memória
+
+        # 5. Prepara o buffer do Zip para ser enviado
+        zip_buffer.seek(0)
+        
+        # 6. Envia o arquivo Zip para o usuário
+        return send_file(
+            zip_buffer,
+            mimetype='application/zip',
+            download_name='arquivos_selecionados.zip',
+            as_attachment=True
+        )
+
+    except HttpError as e:
+        flash(f"Erro no Google Drive ao tentar baixar os arquivos: {e}", "error")
+        return redirect(request.referrer or url_for('dashboard'))
+    except Exception as e:
+        flash(f"Um erro inesperado ocorreu ao criar o arquivo zip: {e}", "error")
+        return redirect(request.referrer or url_for('dashboard'))
+
 @app.route("/logout")
 def logout():
     session.clear()
