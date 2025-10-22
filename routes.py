@@ -12,7 +12,7 @@ from models import (
     cadastro_contador, cadastro_empresa, get_drive_service, 
     pesquisa_pasta_drive_id_drive, pesquisa_pasta_drive_razao_social, 
     vincular_contador_empresa, deletar_vinculo_empresa_contador,
-    get_folder_details, get_file_details_for_download, get_file_media
+    get_folder_details, vincular_empresa_drive, get_file_details_for_download, get_file_media
 )
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -401,3 +401,25 @@ def download_batch():
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+@app.route("/salvar_vinculo", methods=['POST'])
+def salvar_vinculo():
+    if session.get('user_email') != admin_email:
+        flash('Acesso não autorizado.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    ID_EMPRESA = request.form.get('empresa_id')
+    DRIVE_FOLDER_ID = request.form.get('folder_id')
+
+    if ID_EMPRESA and DRIVE_FOLDER_ID:
+        try:
+            sucesso, mensagem = vincular_empresa_drive(ID_EMPRESA, DRIVE_FOLDER_ID)
+            if sucesso:
+                flash(mensagem, 'success')
+                return redirect(url_for('vincular_drive_page'))
+            else:
+                flash(mensagem, 'error')
+                return redirect(url_for('vincular_drive_page'))
+        except Exception as e:
+            flash(f"Erro ao vincular empresa ao Drive: {e}", 'error')
+            return redirect(url_for('vincular_drive_page'))

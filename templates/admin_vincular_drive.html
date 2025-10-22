@@ -63,7 +63,7 @@
                     </thead>
                     <tbody>
                         {% for file in files %}
-                            <form action="{{ url_for('vincular_drive_page') }}" method="POST">
+                            <form action="{{ url_for('salvar_vinculo') }}" method="POST">
                                 <tr>
                                     <td>
                                         <a href="{{ file.webViewLink }}" target="_blank">{{ file.name }}</a><br>
