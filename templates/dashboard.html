@@ -59,41 +59,55 @@
             {% if files %}
                 
                 <div class="folder-navigation">
-                    {% if parent_folder_id %}
-                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=parent_folder_id) }}" class="back-button">
-                            &larr; Voltar
-                        </a>
-                    {% endif %}
                     
-                    <h2>
-                        {% if current_folder %}
-                            Arquivos em: <span>{{ current_folder.name }}</span>
-                        {% else %}
-                            Arquivos disponíveis:
+                    <div class="folder-nav-left">
+                        {% if parent_folder_id %}
+                            <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=parent_folder_id, sort=current_sort) }}" class="back-button">
+                                &larr; Voltar
+                            </a>
                         {% endif %}
-                    </h2>
+                        
+                        <h2>
+                            {% if current_folder %}
+                                Arquivos em: <span>{{ current_folder.name }}</span>
+                            {% else %}
+                                Arquivos disponíveis:
+                            {% endif %}
+                        </h2>
+                    </div>
+                    
+                    <div class="folder-nav-sort">
+                        <span>Ordenar por:</span>
+                        
+                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=current_folder.id, sort='name') }}"
+                           class="sort-link {% if current_sort == 'name' %}active{% endif %}">
+                           Nome
+                        </a>
+                        
+                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=current_folder.id, sort='date') }}"
+                           class="sort-link {% if current_sort == 'date' %}active{% endif %}">
+                           Data (Mais Recente)
+                        </a>
+                    </div>
                 </div>
             
                 <div class="tabela_drive">
                     {% for file in files %}
-                    <a
-                    {% if file.mimeType == 'application/vnd.google-apps.folder'%}
-                        href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=file.id) }}"
-                    {% else %}
-                        href="{{ file.webViewLink }}" target="_blank"
-                    {% endif %}
-                    >
-                        <img src="{{ file.iconLink}}">
-                        <span>{{ file.name}}</span> 
-                    </a>
+                        <a
+                        {% if file.mimeType == 'application/vnd.google-apps.folder'%}
+                            href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=file.id, sort=current_sort) }}"
+                        {% else %}
+                            href="{{ file.webViewLink }}" target="_blank"
+                        {% endif %}
+                        >
+                            <img src="{{ file.iconLink}}">
+                            <span>{{ file.name}}</span> 
+                        </a>
                     {% endfor %}
                 </div>
             
             {% else %}
-                <h2>Arquivos da Empresa</h2>
-                <p>Nenhum arquivo encontrado no momento.</p>
-                <p>Selecione uma empresa ao lado para ver os arquivos disponíveis.</p>            
-            {% endif %}
+                {% endif %}
         </main>
     </div>
 </body>

@@ -449,7 +449,7 @@ def get_folder_details(ID_DRIVE):
         print(f"ERRO AO OBTER DETALHES DA PASTA - LOG:{e}")
         return (False, f"ERROR_GET_FOLDER_DETAILS_LOG:{e}")
 
-def pesquisa_pasta_drive_id_drive(ID_DRIVE):
+def pesquisa_pasta_drive_id_drive(ID_DRIVE, order_by_param="folder, name"):
     FILE_LIST = None
     RESULTS = {}
     try:
@@ -459,7 +459,9 @@ def pesquisa_pasta_drive_id_drive(ID_DRIVE):
             RESULTS = SERVICE.files().list(
                 q=CONSULTA_DRIVE,
                 pageSize=100,
-                fields="files(id, name, webViewLink, iconLink, webContentLink, mimeType)"
+                orderBy=order_by_param,
+                fields="files(id, name, webViewLink, iconLink, webContentLink, mimeType, createdTime, modifiedTime)"
+                
                 ).execute()
             FILE_LIST = RESULTS.get("files", [])
             return(True, FILE_LIST)

@@ -96,6 +96,7 @@ def dashboard():
 
         ID_EMPRESA = request.args.get('empresa_id', type=int)
         ID_PASTA_CLICADA = request.args.get('folder_id', type=str)
+        SORT_KEY = request.args.get('sort', 'name')
         ID_SELECT = None
 
         db = get_db()
@@ -118,8 +119,13 @@ def dashboard():
         # Se temos uma pasta para exibir
         if ID_SELECT:
             try:
-                # Busca o CONTEÚDO da pasta
-                sucesso_lista, FILES = pesquisa_pasta_drive_id_drive(ID_SELECT)
+                if SORT_KEY == 'date':
+                    order_string = 'folder, modifiedTime desc'
+                else:
+                    order_string = 'folder, name'
+
+                # Passar o 'order_string'
+                sucesso_lista, FILES = pesquisa_pasta_drive_id_drive(ID_SELECT, order_string)
                 if sucesso_lista:
                     FILE_LIST = FILES
                 else:
@@ -146,10 +152,11 @@ def dashboard():
             except HttpError as e:
                 flash(f"Erro de requisição ao Google Drive: {e}", "error")
 
+        # FIM - DRIVE
+
         username = session['user_name']
         is_admin = session.get('user_email') == admin_email
         
-        # Passar as novas variáveis para o template
         return render_template(
             "dashboard.html", 
             username=username, 
@@ -158,7 +165,8 @@ def dashboard():
             files=FILE_LIST,
             current_folder=CURRENT_FOLDER,         # Passa os detalhes da pasta atual
             parent_folder_id=PARENT_FOLDER_ID,     # Passa o ID do pai
-            empresa_id=ID_EMPRESA                  # Passa o ID da empresa (para os links)
+            empresa_id=ID_EMPRESA,                 # Passa o ID da empresa (para os links)
+            current_sort=SORT_KEY                  # Passa o tipo de ordenação atual
         )
 
     return redirect(url_for('login'))
