@@ -59,28 +59,20 @@
 
         <main class="conteudo-principal">
             {% if files %}
-            <h2>Seus arquivos disponíveis:</h2>
-            <thead>
-                <tr>
-                    <th>Nome do Arquivo</th>
-                </tr>
-            </thead>
-            <tbody>           
+            <h2>Arquivos disponíveis:</h2>
+            <div class="tabela_drive">
                 {% for file in files %}
-                <tr>
-                    <td style="padding: 8px;">
-                        <img src="{{ file.iconLink}}">
-                        {% if file.mimeType == 'application/vnd.google-apps.folder'%}
-                            <a href="{{ url_for('dashboard', folder_id=file.id) }}">{{ file.name}}</a>
-
-                        {% else %}
-                            <a href="{{ file.webViewLink }}" target="_blank">{{ file.name }}</a>
-
-                        {% endif %}
-                    </td>
-                </tr>
+                <a
+                {% if file.mimeType == 'application/vnd.google-apps.folder'%}
+                    href="{{ url_for('dashboard', folder_id=file.id) }}"
+                {% else %}
+                    href="{{ file.webViewLink }}" target="_blank"
+                {% endif %}
+                >
+                    <img src="{{ file.iconLink}}">
+                    <span>{{ file.name}}</span> </a>
                 {% endfor %}
-            </tbody>
+            </div>
             {% else %}
                 <h2>Arquivos da Empresa</h2>
                 <p>Nenhum arquivo encontrado no momento.</p>
