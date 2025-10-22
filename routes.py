@@ -377,7 +377,7 @@ def download_batch():
                 # D. Escreve o conteúdo do arquivo no Zip
                 zipf.writestr(metadata['name'], file_buffer.read())
                 
-                file_buffer.close() # Libera memória
+                file_buffer.close()
 
         # 5. Prepara o buffer do Zip para ser enviado
         zip_buffer.seek(0)

@@ -154,7 +154,7 @@ header {
     padding: 8px;
 }
 
-.tabela_drive a{
+.drive-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -164,6 +164,38 @@ header {
     text-decoration: none;
     color: inherit;
     background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.drive-item:hover {
+    background-color: #f1f3f4;
+}
+
+label.drive-item.drive-file input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.batch-download-container {
+    padding: 20px 8px;
+    border-top: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+.batch-download-button {
+    padding: 12px 20px;
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.batch-download-button:hover {
+    background-color: #4338ca;
 }
 
 .folder-navigation {

@@ -79,35 +79,55 @@
                     <div class="folder-nav-sort">
                         <span>Ordenar por:</span>
                         
-                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=current_folder.id, sort='name') }}"
+                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=current_folder.id if current_folder else '', sort='name') }}"
                            class="sort-link {% if current_sort == 'name' %}active{% endif %}">
                            Nome
                         </a>
                         
-                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=current_folder.id, sort='date') }}"
+                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=current_folder.id if current_folder else '', sort='date') }}"
                            class="sort-link {% if current_sort == 'date' %}active{% endif %}">
                            Data (Mais Recente)
                         </a>
                     </div>
-                </div>
-            
-                <div class="tabela_drive">
-                    {% for file in files %}
-                        <a
-                        {% if file.mimeType == 'application/vnd.google-apps.folder'%}
-                            href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=file.id, sort=current_sort) }}"
-                        {% else %}
-                            href="{{ url_for('download_file', file_id=file.id) }}"
-                        {% endif %}
-                        >
-                            <img src="{{ file.iconLink}}">
-                            <span>{{ file.name}}</span> 
-                        </a>
-                    {% endfor %}
-                </div>
-            
-            {% else %}
-                {% endif %}
+                </div> <form action="{{ url_for('download_batch') }}" method="POST">
+                
+                    <div class="tabela_drive">
+                        {% for file in files %}
+                        
+                            {% if file.mimeType == 'application/vnd.google-apps.folder'%}
+                                
+                                <a class="drive-item"
+                                   href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=file.id, sort=current_sort) }}">
+                                    <img src="{{ file.iconLink}}">
+                                    <span>{{ file.name}}</span> 
+                                </a>
+
+                            {% else %}
+
+                                <label class="drive-item drive-file" for="file-{{ file.id }}">
+                                    <input type="checkbox" 
+                                           name="file_ids" 
+                                           value="{{ file.id }}" 
+                                           id="file-{{ file.id }}">
+                                    
+                                    <img src="{{ file.iconLink}}">
+                                    <span>{{ file.name}}</span> 
+                                </label>
+
+                            {% endif %}
+
+                        {% endfor %}
+                    </div> <div class="batch-download-container">
+                        <button type="submit" class="batch-download-button">
+                            Baixar Selecionados
+                        </button>
+                    </div>
+                
+                </form> {% else %}
+                <h2>Arquivos da Empresa</h2>
+                <p>Nenhum arquivo encontrado no momento.</p>
+                <p>Selecione uma empresa ao lado para ver os arquivos disponíveis.</p>            
+            {% endif %}
         </main>
     </div>
 </body>
