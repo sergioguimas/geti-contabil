@@ -25,10 +25,6 @@
                     <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Admin" id="icon">
                     <span>Admin</span>
                 </a>
-                <a href="{{ url_for('vincular_drive_page') }}" class="nav-link">
-                    <img src="{{ url_for('static', filename='images/settings.png') }}" alt="drive" id="icon">
-                    <span>Vincular Drive</span>
-                </a>
             {% endif %}        
             <a href="{{ url_for('logout') }}" id="sair">
                 <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Sair" id="icon">
@@ -51,7 +47,7 @@
                     {% endfor %}
                 </select>
                 <button type="submit">Ver Arquivos</button>
-                
+
             </form>
             <div class="info-contador">
                 <p>Logado como: <br><strong>{{ username }}</strong></p>
@@ -59,21 +55,40 @@
         </aside>
 
         <main class="conteudo-principal">
+            
             {% if files %}
-            <h2>Arquivos disponíveis:</h2>
-            <div class="tabela_drive">
-                {% for file in files %}
-                <a
-                {% if file.mimeType == 'application/vnd.google-apps.folder'%}
-                    href="{{ url_for('dashboard', folder_id=file.id) }}"
-                {% else %}
-                    href="{{ file.webViewLink }}" target="_blank"
-                {% endif %}
-                >
-                    <img src="{{ file.iconLink}}">
-                    <span>{{ file.name}}</span> </a>
-                {% endfor %}
-            </div>
+                
+                <div class="folder-navigation">
+                    {% if parent_folder_id %}
+                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=parent_folder_id) }}" class="back-button">
+                            &larr; Voltar
+                        </a>
+                    {% endif %}
+                    
+                    <h2>
+                        {% if current_folder %}
+                            Arquivos em: <span>{{ current_folder.name }}</span>
+                        {% else %}
+                            Arquivos disponíveis:
+                        {% endif %}
+                    </h2>
+                </div>
+            
+                <div class="tabela_drive">
+                    {% for file in files %}
+                    <a
+                    {% if file.mimeType == 'application/vnd.google-apps.folder'%}
+                        href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=file.id) }}"
+                    {% else %}
+                        href="{{ file.webViewLink }}" target="_blank"
+                    {% endif %}
+                    >
+                        <img src="{{ file.iconLink}}">
+                        <span>{{ file.name}}</span> 
+                    </a>
+                    {% endfor %}
+                </div>
+            
             {% else %}
                 <h2>Arquivos da Empresa</h2>
                 <p>Nenhum arquivo encontrado no momento.</p>

@@ -434,7 +434,21 @@ def pesquisa_pasta_drive_razao_social(NOME_DRIVE):
         with open(f"ERROR_CONSULTA_DRIVE_{DATE_LOG}", "w") as txt_log:
             txt_log.write(f"ERROR_CONSULTA_DRIVE_LOG_{e}")
             return (False, f"ERROR_CONSULTA_DRIVE_LOG:{e}")
-        
+
+#OBTEM DETALHES DA PASTA PELO ID_DRIVE    
+def get_folder_details(ID_DRIVE):
+    try:
+        SERVICE = get_drive_service()
+        # Pedimos 'id', 'name' e 'parents' (ID da pasta pai)
+        file_metadata = SERVICE.files().get(
+            fileId=ID_DRIVE,
+            fields="id, name, parents, webViewLink"
+        ).execute()
+        return (True, file_metadata)
+    except HttpError as e:
+        print(f"ERRO AO OBTER DETALHES DA PASTA - LOG:{e}")
+        return (False, f"ERROR_GET_FOLDER_DETAILS_LOG:{e}")
+
 def pesquisa_pasta_drive_id_drive(ID_DRIVE):
     FILE_LIST = None
     RESULTS = {}

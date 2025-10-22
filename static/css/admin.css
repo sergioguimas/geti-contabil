@@ -109,6 +109,10 @@
     border-radius: 0 7px 7px 0;
 }
 
+.table td:nth-child(3) {
+    border-radius: 7px;
+}
+
 .table th {
     background-color: #4f46e5;
     color: white;
@@ -124,4 +128,22 @@
 
 .table th:nth-child(2) {
     border-radius: 0 7px 7px 0;
+}
+
+.table th:nth-child(3) {
+    border-radius: 7px;
+}
+
+.table button{
+    width: 100%;
+    padding: 8px;
+    text-decoration: underline;
+    background-color: #acd8d1ff;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
