@@ -49,10 +49,9 @@
             {% endif %}
         {% endwith %}
 
-        <h2>Gerenciar Vínculos</h2>
-        <p>Aqui você pode gerenciar os vínculos entre contadores e clientes.</p>
-        <div class="form-wrapper">
-            
+        <h2 align="center">Gerenciar Vínculos</h2>
+
+        <div class="form-wrapper">            
             <div class="form-container">
                 <h2>Vincular ou Desvincular</h2>
                 <form method="POST" action="{{ url_for('admin_vinculos') }}">
@@ -87,20 +86,20 @@
             <div class="form-container">
                 <h2>Empresas e Seus Vínculos</h2>
                 
-                <table style="width: 100%; border-collapse: collapse;" border="1">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th style="padding: 8px; text-align: left;">Empresa</th>
-                            <th style="padding: 8px; text-align: left;">Contador Vinculado</th>
+                            <th>Empresa</th>
+                            <th>Contador Vinculado</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for empresa in empresas_vinculadas %}
                         <tr>
-                            <td style="padding: 8px;">
+                            <td>
                                 {{ empresa.nome_fantasia or empresa.razao_social }}
                             </td>
-                            <td style="padding: 8px;">
+                            <td>
                                 {% if empresa.contador_nome %}
                                     {{ empresa.contador_nome }} ({{ empresa.contador_email }})
                                 {% else %}
