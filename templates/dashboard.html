@@ -37,7 +37,7 @@
     <div class="dashboard-container">
         <aside class="menu-lateral">
             <h3>Empresas</h3>
-            <p>Selecione uma empresa para ver os arquivos.</p>
+            <p align="center">Selecione uma empresa para ver os arquivos.</p>
             <form action="{{ url_for('dashboard')}}" method="GET">
                 <select name="empresa_id" class="empresa-select">
                     {% for empresa in empresas %}

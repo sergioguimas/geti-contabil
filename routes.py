@@ -91,10 +91,9 @@ def dashboard():
             db = get_db()
             empresas = db.execute(
                 """
-                SELECT e.id, e.nome_fantasia, e.razao_social
-                FROM empresa e
-                JOIN contador_empresa ce ON e.id = ce.id_empresa
-                ORDER BY e.nome_fantasia
+                SELECT id, nome_fantasia, razao_social
+                FROM empresa
+                ORDER BY nome_fantasia
                 """
             ).fetchall()
         

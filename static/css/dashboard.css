@@ -253,48 +253,54 @@ header {
 
 .file-table {
     width: 100%;
-    border-collapse: collapse; /* Bordas unidas */
+    border-collapse: collapse;
     margin-top: 20px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    overflow: hidden; /* Para o border-radius funcionar no <thead> */
+    overflow: hidden;
+    table-layout: fixed;
 }
 
 .file-table th,
 .file-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 8px 15px;
+    border-bottom: 1px solid #777777;
     text-align: left;
     vertical-align: middle;
 }
 
-/* Cabeçalho da Tabela */
 .file-table th {
-    background-color: #f9f9f9;
-    font-size: 0.85em;
-    color: #555;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    background-color: #4f46e5;
+    color: white;
+    box-align: center;
+    padding: 10px;
+    border-bottom: 3px solid #000000;
 }
 
-/* Linhas do Corpo */
+.file-table tr:nth-child(odd) {
+    background-color: #dadada;
+}
+
+.file-table tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
 .file-table tbody tr:hover {
-    background-color: #f4f8ff; /* Azul bem claro no hover */
+    background-color: #a2c4ff;
 }
 
-/* Célula de Checkbox */
 .col-check {
-    width: 40px;
+    width: 5%;
     text-align: center;
+    align-items: center;
 }
 .col-check input {
     transform: scale(1.2);
 }
 
-/* Célula de Nome (com ícone) */
 .col-name {
-    width: 60%; /* Ocupa a maior parte do espaço */
+    width: 60%;
 }
 
 .file-name-cell {
@@ -306,15 +312,13 @@ header {
 .file-name-cell img {
     width: 20px;
     height: 20px;
-    flex-shrink: 0; /* Impede que o ícone encolha */
+    flex-shrink: 0;
 }
 
 .file-name-cell a {
     text-decoration: none;
-    color: #062251; /* Cor escura do seu tema */
+    color: #062251;
     font-weight: 500;
-    
-    /* Para nomes de arquivo longos */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -324,21 +328,18 @@ header {
     text-decoration: underline;
 }
 
-/* Célula de Data */
 .col-date {
     width: 20%;
     font-size: 0.9em;
     color: #666;
 }
 
-/* Célula de Tipo */
 .col-type {
-    width: 15%;
+    width: 10%;
     font-size: 0.9em;
     color: #666;
 }
 
-/* Remove a borda da última linha */
 .file-table tbody tr:last-child td {
     border-bottom: none;
 }
