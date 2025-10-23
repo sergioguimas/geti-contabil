@@ -92,8 +92,9 @@ header {
 }
 
 .menu-lateral {
-    width: 20%;
+    width: 15%;
     max-width: 300px;
+    flex-shrink: 0;
     background-color: #acd8d1ff;
     padding: 20px;
     border-right: 1px solid #ddd;
@@ -129,6 +130,14 @@ header {
     background-color: #4338ca;
 }
 
+.info-empresas {
+    position: sticky;
+    top: 20px;
+    z-index: 10;
+    background-color: #acd8d1ff;
+    padding-bottom: 10px;
+}
+
 .info-contador {
     margin-top: auto;
     padding-left: 10px;
@@ -137,6 +146,8 @@ header {
     border-radius: 10px;
     font-size: 0.9em;
     color: #555;
+    position: sticky;
+    bottom: 20px;
 }
 
 .conteudo-principal {
@@ -191,13 +202,15 @@ header {
 .back-button {
     display: inline-block;
     padding: 8px 15px;
-    background-color: #ffffff;
+    background-color: #4f46e5;
     border: 1px solid #ccc;
     border-radius: 5px;
     text-decoration: none;
     color: #333;
+    color: white;
     font-weight: 500;
-    font-size: 0.95em;
+    font-size: 0.9em;
+    font-weight: bold;
     transition: background-color 0.3s;
 }
 

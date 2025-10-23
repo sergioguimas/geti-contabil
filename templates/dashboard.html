@@ -8,7 +8,9 @@
 <body>
     <header>
         <div class="header-left">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo">
+            <a href="{{ url_for('dashboard') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo" >
+            </a>
         </div>
 
         <div class="header-center">
@@ -36,19 +38,21 @@
 
     <div class="dashboard-container">
         <aside class="menu-lateral">
-            <h3>Empresas</h3>
-            <p align="center">Selecione uma empresa para ver os arquivos.</p>
-            <form action="{{ url_for('dashboard')}}" method="GET" id="empresa-form">
-                <select name="empresa_id" class="empresa-select" id="empresa-select-id">
-                    <option value="">-- Selecione uma empresa --</option>
-                    {% for empresa in empresas %}
-                        <option value="{{ empresa.id }}" {% if empresa.id == empresa_id %}selected{% endif %}>
-                            {{ empresa.nome_fantasia or empresa.razao_social }}
-                        </option>
-                    {% endfor %}
-                </select>
-                <button type="submit" style="display: none;">Ver Arquivos</button>
-            </form>
+            <div class="info-empresas">
+                <h3>Empresas</h3>
+                <p align="center">Selecione uma empresa para ver os arquivos.</p>
+                <form action="{{ url_for('dashboard')}}" method="GET" id="empresa-form">
+                    <select name="empresa_id" class="empresa-select" id="empresa-select-id">
+                        <option value="">-- Selecione uma empresa --</option>
+                        {% for empresa in empresas %}
+                            <option value="{{ empresa.id }}" {% if empresa.id == empresa_id %}selected{% endif %}>
+                                {{ empresa.nome_fantasia or empresa.razao_social }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" style="display: none;">Ver Arquivos</button>
+                </form>
+            </div>
             <div class="info-contador">
                 <p>Logado como: <br><strong>{{ username }}</strong></p>
             </div>
