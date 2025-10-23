@@ -12,7 +12,7 @@ from models import (
     cadastro_contador, cadastro_empresa, get_drive_service, 
     pesquisa_pasta_drive_id_drive, pesquisa_pasta_drive_razao_social, 
     vincular_contador_empresa, deletar_vinculo_empresa_contador,
-    get_folder_details, vincular_empresa_drive, get_file_details_for_download, get_file_media
+    get_folder_details, vincular_empresa_drive, get_file_download_request_and_name
 )
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -293,36 +293,29 @@ def download_file(file_id):
         return redirect(url_for('login'))
     
     try:
-        # 1. Buscar Metadados (Nome, Tipo)
-        sucesso_meta, metadata = get_file_details_for_download(file_id)
-        if not sucesso_meta:
-            flash(f"Não foi possível obter os metadados do arquivo: {metadata}", "error")
-            # Retorna o usuário para a página de onde ele veio
+        # 1. Chamar a nova função "inteligente"
+        sucesso, request_obj, download_name, mime_type = get_file_download_request_and_name(file_id)
+        
+        if not sucesso:
+            flash(f"Não foi possível preparar o arquivo para download: {request_obj}", "error")
             return redirect(request.referrer or url_for('dashboard'))
 
-        # 2. Buscar a Mídia (o conteúdo)
-        sucesso_media, request_media = get_file_media(file_id)
-        if not sucesso_media:
-            flash(f"Não foi possível baixar o arquivo: {request_media}", "error")
-            return redirect(request.referrer or url_for('dashboard'))
-        
-        # 3. Baixar o arquivo para um buffer em memória (BytesIO)
+        # 2. Baixar o arquivo para um buffer
         fh = io.BytesIO()
-        downloader = MediaIoBaseDownload(fh, request_media)
+        downloader = MediaIoBaseDownload(fh, request_obj)
         
         done = False
         while done is False:
             status, done = downloader.next_chunk()
-            # print(f"Download {int(status.progress() * 100)}%.") # Útil para debug
 
         fh.seek(0) # Retorna ao início do buffer
 
-        # 4. Enviar o arquivo para o usuário
+        # 3. Enviar o arquivo para o usuário com o nome e tipo corretos
         return send_file(
             fh,
-            mimetype=metadata['mimeType'],
-            download_name=metadata['name'], # O nome que o usuário verá
-            as_attachment=True # Força o download
+            mimetype=mime_type,
+            download_name=download_name,
+            as_attachment=True
         )
 
     except HttpError as e:
@@ -334,60 +327,55 @@ def download_batch():
     if 'user_name' not in session:
         return redirect(url_for('login'))
 
-    # 1. Pega a lista de IDs dos checkboxes marcados
     file_ids = request.form.getlist("file_ids")
+    download_token = request.form.get("download_token")
 
     if not file_ids:
         flash("Nenhum arquivo foi selecionado para download.", "error")
         return redirect(request.referrer or url_for('dashboard'))
 
-    # 2. Cria um buffer em memória para o arquivo Zip
     zip_buffer = io.BytesIO()
 
     try:
-        # 3. Cria o arquivo Zip em modo de escrita
-        #    zipfile.ZIP_DEFLATED habilita a compressão
         with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
             
-            # 4. Loop para cada arquivo selecionado
             for file_id in file_ids:
                 
-                # A. Pega o nome do arquivo
-                sucesso_meta, metadata = get_file_details_for_download(file_id)
-                if not sucesso_meta:
-                    print(f"Erro ao buscar metadados do {file_id}: {metadata}")
-                    continue # Pula este arquivo se der erro
+                # 1. Chamar a nova função "inteligente" para cada arquivo
+                sucesso, request_obj, download_name, mime_type = get_file_download_request_and_name(file_id)
 
-                # B. Pega o conteúdo (mídia)
-                sucesso_media, request_media = get_file_media(file_id)
-                if not sucesso_media:
-                    print(f"Erro ao buscar mídia do {file_id}: {request_media}")
+                if not sucesso:
+                    print(f"Erro ao preparar {file_id} para o zip: {request_obj}")
                     continue # Pula este arquivo
 
-                # C. Baixa o arquivo para um buffer temporário
+                # 2. Baixa o arquivo para um buffer temporário
                 file_buffer = io.BytesIO()
-                downloader = MediaIoBaseDownload(file_buffer, request_media)
+                downloader = MediaIoBaseDownload(file_buffer, request_obj)
                 done = False
                 while done is False:
                     status, done = downloader.next_chunk()
                 
-                file_buffer.seek(0) # Retorna ao início do buffer do arquivo
+                file_buffer.seek(0)
 
-                # D. Escreve o conteúdo do arquivo no Zip
-                zipf.writestr(metadata['name'], file_buffer.read())
+                # 3. Escreve o conteúdo no Zip COM o nome correto (ex: "planilha.xlsx")
+                zipf.writestr(download_name, file_buffer.read())
                 
                 file_buffer.close()
 
-        # 5. Prepara o buffer do Zip para ser enviado
+        # Prepara o buffer do Zip para ser enviado
         zip_buffer.seek(0)
         
-        # 6. Envia o arquivo Zip para o usuário
-        return send_file(
+        response = send_file(
             zip_buffer,
             mimetype='application/zip',
             download_name='arquivos_selecionados.zip',
             as_attachment=True
         )
+
+        if download_token:
+            response.set_cookie(f"download_token_{download_token}", "true", max_age=30) 
+        
+        return response
 
     except HttpError as e:
         flash(f"Erro no Google Drive ao tentar baixar os arquivos: {e}", "error")

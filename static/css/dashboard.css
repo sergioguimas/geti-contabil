@@ -343,3 +343,53 @@ header {
 .file-table tbody tr:last-child td {
     border-bottom: none;
 }
+
+.modal-overlay {
+    position: fixed; /* Fica fixo na tela */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Fundo preto semi-transparente */
+    z-index: 1000; /* Fica na frente de tudo */
+    display: none; /* Começa escondido */
+    justify-content: center;
+    align-items: center;
+}
+
+/* A caixa branca do pop-up */
+.modal-content {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    z-index: 1001;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #062251;
+}
+
+.modal-content p {
+    color: #333;
+    font-size: 1.1em;
+}
+
+/* O "Spinner" de carregamento (animação) */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3; /* Cinza claro */
+    border-top: 5px solid #4f46e5; /* Azul do seu tema */
+    border-radius: 50%;
+    margin: 0 auto 20px auto;
+    animation: spin 1s linear infinite;
+}
+
+/* Animação do spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

@@ -37,6 +37,8 @@ def format_mimetype_filter(mime_type):
     
     if mime_type == 'application/vnd.google-apps.folder':
         return 'Pasta'
+    if 'xml' in mime_type:
+        return 'Arquivo XML'
     if 'pdf' in mime_type:
         return 'Arquivo PDF'
     if 'spreadsheet' in mime_type or 'excel' in mime_type or 'csv' in mime_type:

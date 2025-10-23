@@ -91,7 +91,7 @@
                     </div>
                 </div> 
 
-                <form action="{{ url_for('download_batch') }}" method="POST">
+                <form action="{{ url_for('download_batch') }}" method="POST" id="download-form">
                     <table class="file-table">
                         <thead>
                             <tr>
@@ -143,7 +143,7 @@
                         </tbody>
                     </table>
                     <div class="batch-download-container">
-                        <button type="submit" class="batch-download-button">
+                        <button type="submit" class="batch-download-button" id="download-button">
                             Baixar Selecionados
                         </button>
                     </div>
@@ -155,6 +155,13 @@
             {% endif %}
         </main>
     </div>
+    <div class="modal-overlay" id="loading-modal">
+        <div class="modal-content">
+            <div class="spinner"></div>
+            <h3>Compactando os arquivos para Download</h3>
+            <p>Isso pode levar alguns instantes. <br>Aguarde...</p>
+        </div>
+    </div>
     <script>
         document.getElementById('select-all-checkbox').addEventListener('change', function(e) {
             var checkboxes = document.querySelectorAll('.file-checkbox');
@@ -162,6 +169,74 @@
                 checkbox.checked = e.target.checked;
             }
         });
+
+        const downloadForm = document.getElementById('download-form');
+        const downloadButton = document.getElementById('download-button');
+        const loadingModal = document.getElementById('loading-modal');
+
+        if (downloadForm) {
+            downloadForm.addEventListener('submit', function(e) {
+                
+                // 1. Verifica se algum arquivo foi selecionado
+                const checkedFiles = document.querySelectorAll('.file-checkbox:checked');
+                if (checkedFiles.length === 0) {
+                    e.preventDefault();
+                    alert('Por favor, selecione pelo menos um arquivo para baixar.');
+                    return;
+                }
+
+                // 2. Mostra o pop-up
+                loadingModal.style.display = 'flex';
+
+                // 3. Desabilita o botão
+                downloadButton.disabled = true;
+                downloadButton.innerText = 'Preparando...';
+
+                // 4. TRUQUE DO COOKIE:
+                // Cria um "token" único para este download
+                const downloadToken = Date.now();
+                
+                // Adiciona o token ao formulário como um campo oculto
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = 'download_token';
+                tokenInput.value = downloadToken;
+                downloadForm.appendChild(tokenInput);
+
+                // 5. Começa a verificar se o cookie de "download pronto" existe
+                let checkCookieInterval = setInterval(function() {
+                    const cookieName = `download_token_${downloadToken}`;
+                    if (document.cookie.includes(cookieName + '=true')) {
+                        // 6. O cookie foi encontrado!
+                        clearInterval(checkCookieInterval); // Para de verificar
+                        
+                        // Esconde o pop-up
+                        loadingModal.style.display = 'none'; 
+                        
+                        // Reabilita o botão
+                        downloadButton.disabled = false;
+                        downloadButton.innerText = 'Baixar Selecionados';
+                        
+                        // Limpa o cookie
+                        document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+                        
+                        // Remove o campo oculto do formulário
+                        downloadForm.removeChild(tokenInput);
+                    }
+                }, 1000); // Verifica a cada 1 segundo
+
+                // 7. Failsafe: Se o cookie não for encontrado após 2 minutos, para tudo.
+                setTimeout(function() {
+                    clearInterval(checkCookieInterval);
+                    if (loadingModal.style.display === 'flex') {
+                        loadingModal.style.display = 'none';
+                        downloadButton.disabled = false;
+                        downloadButton.innerText = 'Baixar Selecionados';
+                        alert("Ocorreu um erro ou o tempo limite foi atingido.");
+                    }
+                }, 120000); // 2 minutos
+            });
+        }
     </script>
 </body>
 </html>

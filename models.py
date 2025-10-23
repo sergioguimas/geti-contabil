@@ -474,25 +474,50 @@ def pesquisa_pasta_drive_id_drive(ID_DRIVE, order_by_param="folder, name"):
                 txt_log.write(f"ERROR_CONSULTA_DRIVE_LOG_{e}")
                 return (False, f"ERROR_CONSULTA_DRIVE_LOG:{e}")
 
-#Busca os metadados de um ARQUIVO (nome, mimeType) para download.
-def get_file_details_for_download(ID_FILE):
+#PREPARA REQUEST DE DOWNLOAD DE ARQUIVO PELO ID
+def get_file_download_request_and_name(ID_FILE):
     try:
         SERVICE = get_drive_service()
+        
+        # 1. Obter metadados (nome e mimeType)
         file_metadata = SERVICE.files().get(
             fileId=ID_FILE,
             fields="name, mimeType"
         ).execute()
-        return (True, file_metadata)
-    except HttpError as e:
-        print(f"ERRO AO OBTER METADADOS DO ARQUIVO - LOG:{e}")
-        return (False, f"ERROR_GET_FILE_METADATA_LOG:{e}")
+        
+        name = file_metadata.get('name')
+        original_mime_type = file_metadata.get('mimeType')
 
-#Retorna o objeto de requisição para baixar a mídia (conteúdo) do arquivo.
-def get_file_media(ID_FILE):
-    try:
-        SERVICE = get_drive_service()
-        request = SERVICE.files().get_media(fileId=ID_FILE)
-        return (True, request)
+        # 2. Decidir se é exportação ou download direto
+        
+        if original_mime_type == 'application/vnd.google-apps.document':
+            # Exporta Google Doc como PDF
+            export_mime = 'application/pdf'
+            download_name = f"{name}.pdf"
+        
+        elif original_mime_type == 'application/vnd.google-apps.spreadsheet':
+            # Exporta Google Sheet como Excel (xlsx)
+            export_mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            download_name = f"{name}.xlsx"
+        
+        elif original_mime_type == 'application/vnd.google-apps.presentation':
+            # Exporta Google Slides como PDF
+            export_mime = 'application/pdf'
+            download_name = f"{name}.pdf"
+        
+        else:
+            # É um arquivo normal (PDF, JPG, ZIP, etc.)
+            # Usa o método get_media
+            request = SERVICE.files().get_media(fileId=ID_FILE)
+            return (True, request, name, original_mime_type)
+
+        # 3. Se chegou aqui, é um tipo Google, então crie um request de EXPORT
+        request = SERVICE.files().export_media(
+            fileId=ID_FILE,
+            mimeType=export_mime
+        )
+        return (True, request, download_name, export_mime)
+        
     except HttpError as e:
-        print(f"ERRO AO OBTER MÍDIA DO ARQUIVO - LOG:{e}")
-        return (False, f"ERROR_GET_FILE_MEDIA_LOG:{e}")            
+        print(f"ERRO AO PREPARAR DOWNLOAD DO ARQUIVO - LOG:{e}")
+        return (False, f"ERROR_PREPARE_DOWNLOAD_LOG:{e}", None, None)          
