@@ -1,5 +1,6 @@
 #Web Framework
 Flask
+gunicorn
 
 #Api Google + Auths
 google-api-python-client
