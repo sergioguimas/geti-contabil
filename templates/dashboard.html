@@ -89,46 +89,79 @@
                            Data (Mais Recente)
                         </a>
                     </div>
-                </div> <form action="{{ url_for('download_batch') }}" method="POST">
-                
-                    <div class="tabela_drive">
-                        {% for file in files %}
-                        
-                            {% if file.mimeType == 'application/vnd.google-apps.folder'%}
+                </div> 
+
+                <form action="{{ url_for('download_batch') }}" method="POST">
+                    <table class="file-table">
+                        <thead>
+                            <tr>
+                                <th class="col-check">
+                                    <input type="checkbox" id="select-all-checkbox" title="Selecionar Todos">
+                                </th>
+                                <th class="col-name">Nome</th>
+                                <th class="col-date">Modificado em</th>
+                                <th class="col-type">Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in files %}
+                            <tr>
+                                <td class="col-check">
+                                    {% if file.mimeType != 'application/vnd.google-apps.folder'%}
+                                        <input type="checkbox" 
+                                                name="file_ids" 
+                                                value="{{ file.id }}" 
+                                                id="file-{{ file.id }}"
+                                                class="file-checkbox">
+                                    {% endif %}
+                                </td>
                                 
-                                <a class="drive-item"
-                                   href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=file.id, sort=current_sort) }}">
-                                    <img src="{{ file.iconLink}}">
-                                    <span>{{ file.name}}</span> 
-                                </a>
-
-                            {% else %}
-
-                                <label class="drive-item drive-file" for="file-{{ file.id }}">
-                                    <input type="checkbox" 
-                                           name="file_ids" 
-                                           value="{{ file.id }}" 
-                                           id="file-{{ file.id }}">
-                                    
-                                    <img src="{{ file.iconLink}}">
-                                    <span>{{ file.name}}</span> 
-                                </label>
-
-                            {% endif %}
-
-                        {% endfor %}
-                    </div> <div class="batch-download-container">
+                                <td class="col-name">
+                                    <div class="file-name-cell">
+                                        <img src="{{ file.iconLink}}" alt="ícone">
+                                        {% if file.mimeType == 'application/vnd.google-apps.folder'%}
+                                            <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=file.id, sort=current_sort) }}">
+                                                {{ file.name }}
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url_for('download_file', file_id=file.id) }}" title="Baixar {{ file.name }}">
+                                                {{ file.name }}
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                
+                                <td class="col-date">
+                                    {{ file.modifiedTime | format_datetime }}
+                                </td>
+                                
+                                <td class="col-type">
+                                    {{ file.mimeType | format_mimetype }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="batch-download-container">
                         <button type="submit" class="batch-download-button">
                             Baixar Selecionados
                         </button>
                     </div>
-                
-                </form> {% else %}
-                <h2>Arquivos da Empresa</h2>
-                <p>Nenhum arquivo encontrado no momento.</p>
-                <p>Selecione uma empresa ao lado para ver os arquivos disponíveis.</p>            
+                </form> 
+                {% else %}
+                    <h2>Arquivos da Empresa</h2>
+                    <p>Nenhum arquivo encontrado no momento.</p>
+                    <p>Selecione uma empresa ao lado para ver os arquivos disponíveis.</p>            
             {% endif %}
         </main>
     </div>
+    <script>
+        document.getElementById('select-all-checkbox').addEventListener('change', function(e) {
+            var checkboxes = document.querySelectorAll('.file-checkbox');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = e.target.checked;
+            }
+        });
+    </script>
 </body>
 </html>
