@@ -279,7 +279,7 @@ def vincular_drive_page():
         else:
             flash('Digite um nome para a busca.', 'warning')
     db = get_db()
-    EMPRESAS = db.execute("SELECT id, razao_social FROM empresa ORDER BY razao_social").fetchall()
+    EMPRESAS = db.execute("SELECT id, razao_social, nome_fantasia FROM empresa ORDER BY razao_social").fetchall()
 
     return render_template(
         "admin_vincular_drive.html", 

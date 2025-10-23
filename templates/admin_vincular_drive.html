@@ -39,6 +39,15 @@
     <h1 align="center">Vincular Pasta do Drive a uma Empresa</h1>
 
     <div class="admin-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
         <div class="form-wrapper">
             <!-- Formulário de Busca -->
             <div class="form-container">
@@ -76,7 +85,7 @@
                                         <select name="empresa_id" required>
                                             <option value="">-- Selecione a empresa --</option>
                                             {% for empresa in empresas %}
-                                                <option value="{{ empresa.id }}">{{ empresa.razao_social }}</option>
+                                                <option value="{{ empresa.id }}">{{ empresa.nome_fantasia or empresa.razao_social }}</option>
                                             {% endfor %}
                                         </select>
                                     </td>
