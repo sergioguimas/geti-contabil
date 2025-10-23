@@ -105,3 +105,34 @@ Ao executar uma ação que usa a API do Google pela primeira vez, o navegador ab
 /admin/vinculos: (Admin) Página para gerenciar vínculos entre contadores e empresas.
 /drive: (Admin) Página para buscar e vincular pastas do Drive.
 /salvar_vinculo: (Admin) Ação de salvar o vínculo (empresa <-> drive)
+
+4. Acessos
+
+4.1 Admin:
+
+Credenciais no arquivo .env.
+Acesso ao painel administrativo (Botão Admin):
+
+    /admin: Tela de cadstros - O proprio FORMS já informa o que é obrigatório, caso não tenha definida e/ou cadastrado o vinculo relacionado, deixar com a seleção "Admin" para entrada vazia no banco.
+    /admin/vinculos: Tela de gerenciamento de vinculos Contador/Empresa - no forms a esquerda pode selecionar a empresa e o contador desejados e usar o botão para Vincular ou Desvincular.
+    /drive: Tela de vinculação a pasta no Google Drive - Pesquisar de acordo Nome Fantasia da empresa (Nome dela no Geti Gestor) e selecionar a qual empresa aquela pasta vai pertencer.
+    A relação de Empresa X Conador é de N:N (Uma empresa pode ser vinculada a N contadores e N contadores podem ser vinculados a uma mesma empresa).
+    O ID do Google Drive é único por empresa, caso seja feita uma vinculação em uma empresa que ja tenha um ID irá retornar um Erro.
+
+O Admin consgue ver o drive de todas as empresas cadastradas, independente de vínculo a contador.
+
+4.2 Contador
+
+Credenciais no banco de dados.
+Botão Admin fica oculto e o acesso as paginas pela url retornam na Dashboard.
+O contador consegue ter acesso apenas as empresas que foram vinculadas a ele, tendo livre acesso as pastas e arquivos daquela empresa.
+
+5. Funcionalidades
+
+Ao selecionar uma empresa pelo menu lateral, o container principal será atualizado de acordo o ID do Drive vinculado aquela empresa, onde se tem:
+    
+    Botão Voltar: Caso não esteja na pasta raiz da empresa, o botão retorna para a pasta pai da que esta atualmente.
+    Order By: Seleciona a ordenação dos arquivos, por Nome (Ordem Alfabética) ou por Data (Mais recentes primeiro).
+    Check Box: A checkbox do cabeçalho seleciona todos os arquivos daquela pasta, as que estão nos arquivos selecionam individualmente.
+    Download Individual: Ao clicar no nome do arquivo, será baixado individualmente (mantendo o tipo original .xml, .xlsx, .pdf, etc).
+    Download de seleção: Ao selecionar ao menos um arquivo pela checkbox, poderá clicar no botão "Baixar Selecionados" no fim da página para compactar todos os arquivos selecionados e baixar um .zip com eles.
