@@ -1,4 +1,4 @@
-1. Projeto Portal do Contador
+1. Projeto Portal do Contador (Geti Contábil)
 
 1.1. Descrição
 
@@ -63,7 +63,8 @@ Configurar o Ambiente (.env e Credenciais):
 
 Crie um arquivo .env na raiz do projeto e adicione sua SECRET_KEY:
 
-SECRET_KEY='sua-chave-secreta-e-longa-aqui'
+KEY_FLASK="chave-secreta"
+ADMIN_EMAIL="email-do-admin"
 
 
 Credenciais do Google:
@@ -78,13 +79,11 @@ Inicializar o Banco de Dados:
 
 Execute o script de setup para criar as tabelas no seu banco de dados (ex: usuarios.db).
 
-python setup_database.py
+python init_db.py
 
 
 Executar a Aplicação:
 
-flask run --debug
-# Ou, se o seu ponto de entrada for app.py:
 python app.py
 
 
@@ -97,15 +96,12 @@ Ao executar uma ação que usa a API do Google pela primeira vez, o navegador ab
 3. Estrutura das Rotas (Endpoints)
 
 /: Redireciona para o login ou dashboard.
-
 /login: Página de login.
-
 /logout: Encerra a sessão do usuário.
-
 /dashboard: Painel principal do contador, onde ele vê empresas e arquivos.
-
+/download/<file_id>: Rota para download de arquivo individual.
+/download/batch: Rota para download dos arquivos selecionados em lote (.zip).
 /admin: (Admin) Página para cadastros (Contador, Empresa).
-
+/admin/vinculos: (Admin) Página para gerenciar vínculos entre contadores e empresas.
 /drive: (Admin) Página para buscar e vincular pastas do Drive.
-
-/salvar-vinculo: (Admin) Ação de salvar o vínculo.
+/salvar_vinculo: (Admin) Ação de salvar o vínculo (empresa <-> drive)

@@ -1,0 +1,1 @@
+ERRO_DE_UPDATE-EMPRESA-Falha ao alterar registro - SQLog:UNIQUE constraint failed: empresa.g_drve_folder_id
