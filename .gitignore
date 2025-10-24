@@ -20,3 +20,4 @@ usuarios.db
 
 #Ambiente Virtual
 .venv
+.gitignore
