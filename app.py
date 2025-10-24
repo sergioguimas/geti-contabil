@@ -31,7 +31,6 @@ def format_datetime_filter(iso_string):
 #Função para formatar Tipo do Arquivo
 @app.template_filter('format_mimetype')
 def format_mimetype_filter(mime_type):
-    """Filtro para traduzir mimeTypes comuns."""
     if not mime_type:
         return "Desconhecido"
     
@@ -57,4 +56,4 @@ def format_mimetype_filter(mime_type):
 from routes import *
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

@@ -111,15 +111,17 @@ Ao executar uma ação que usa a API do Google pela primeira vez, o navegador ab
 4.1 Admin:
 
 Credenciais no arquivo .env.
-Acesso ao painel administrativo (Botão Admin):
+O Admin consgue ver o drive de todas as empresas cadastradas, independente de vínculo a contador.
+
+# Acesso ao painel administrativo (Botão Admin):
 
     /admin: Tela de cadstros - O proprio FORMS já informa o que é obrigatório, caso não tenha definida e/ou cadastrado o vinculo relacionado, deixar com a seleção "Admin" para entrada vazia no banco.
     /admin/vinculos: Tela de gerenciamento de vinculos Contador/Empresa - no forms a esquerda pode selecionar a empresa e o contador desejados e usar o botão para Vincular ou Desvincular.
     /drive: Tela de vinculação a pasta no Google Drive - Pesquisar de acordo Nome Fantasia da empresa (Nome dela no Geti Gestor) e selecionar a qual empresa aquela pasta vai pertencer.
+    
     A relação de Empresa X Conador é de N:N (Uma empresa pode ser vinculada a N contadores e N contadores podem ser vinculados a uma mesma empresa).
     O ID do Google Drive é único por empresa, caso seja feita uma vinculação em uma empresa que ja tenha um ID irá retornar um Erro.
 
-O Admin consgue ver o drive de todas as empresas cadastradas, independente de vínculo a contador.
 
 4.2 Contador
 
