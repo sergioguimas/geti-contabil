@@ -1,16 +1,12 @@
 #Web Framework
 Flask
-gunicorn
-
 #Api Google + Auths
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
-
 #Validação
 Werkzeug
 email-validator
-
 #Geral
 gunicorn
 dotenv

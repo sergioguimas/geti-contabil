@@ -1,14 +1,14 @@
 from flask import Flask
+import re
 import os
-from dotenv import load_dotenv
 import os.path
+from dotenv import load_dotenv
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from datetime import datetime
-import re
 load_dotenv()
 
 KEY_FLASK = os.getenv("KEY_FLASK")
@@ -19,7 +19,6 @@ app.secret_key = KEY_FLASK
 #Função para formatar data
 @app.template_filter('format_datetime')
 def format_datetime_filter(iso_string):
-    """Filtro para formatar data ISO (ex: 2025-10-23T10:00:00Z) para DD/MM/AAAA HH:MM"""
     if not iso_string:
         return "N/A"
     try:
