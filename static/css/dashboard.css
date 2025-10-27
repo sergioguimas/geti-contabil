@@ -3,6 +3,11 @@ body {
     margin: 0; 
     background-color: #f0f2f5;
     color: #333;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -88,7 +93,9 @@ header {
 
 .dashboard-container {
     display: flex;
-    min-height: calc(100vh - 90px);
+    flex-grow: 1;
+    overflow: hidden;
+    /* min-height: calc(100vh - 90px); */
 }
 
 .menu-lateral {
@@ -152,10 +159,13 @@ header {
 
 .conteudo-principal {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     padding: 20px 40px;
     background-color: #ffffff62;
     border-radius: 15px;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
 }
 
 .batch-download-container {
@@ -267,12 +277,29 @@ header {
 .file-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    overflow: hidden;
     table-layout: fixed;
+}
+
+.file-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-radius: 8px;
+}
+
+.file-table thead tr th:first-child {
+    border-radius: 8px 0px 0px 0px;
+}
+
+.file-table thead tr th:last-child {
+    border-radius: 0px 8px 0px 0px;
+}
+
+.table-over {
+    overflow: auto;
 }
 
 .file-table th,
@@ -286,7 +313,6 @@ header {
 .file-table th {
     background-color: #4f46e5;
     color: white;
-    box-align: center;
     padding: 10px;
     border-bottom: 3px solid #000000;
 }
@@ -358,13 +384,13 @@ header {
 }
 
 .modal-overlay {
-    position: fixed; /* Fica fixo na tela */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6); /* Fundo preto semi-transparente */
-    z-index: 1000; /* Fica na frente de tudo */
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
     display: none; /* Começa escondido */
     justify-content: center;
     align-items: center;
@@ -394,8 +420,8 @@ header {
 .spinner {
     width: 50px;
     height: 50px;
-    border: 5px solid #f3f3f3; /* Cinza claro */
-    border-top: 5px solid #4f46e5; /* Azul do seu tema */
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #4f46e5;
     border-radius: 50%;
     margin: 0 auto 20px auto;
     animation: spin 1s linear infinite;
@@ -405,4 +431,11 @@ header {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+#download-form {
+    flex-grow: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
