@@ -20,15 +20,15 @@
         </div>
 
         <div class="header-right">
-            <a href="{{ url_for('admin_page') }}" class="nav-link">
+            <a href="{{ url_for('admin_cadastros') }}" class="dropdown-button">
                 <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Admin" id="icon">
                 <span>Cadastros</span>
             </a>
-            <a href="{{ url_for('admin_vinculos') }}" class="nav-link">
+            <a href="{{ url_for('admin_vinculos') }}" class="dropdown-button">
                 <img src="{{ url_for('static', filename='images/chain.png') }}" alt="Vincular" id="icon">
                 <span>Vinculos</span>
             </a>  
-            <a href="{{ url_for('dashboard') }}" class="nav-link">
+            <a href="{{ url_for('dashboard') }}" class="dropdown-button">
                 <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
                 <span>Arquivos</span>
             </a>     

@@ -20,11 +20,11 @@
         </div>
 
         <div class="header-right">
-            <a href="{{ url_for('admin_vinculos') }}" class="nav-link">
+            <a href="{{ url_for('admin_vinculos') }}" class="dropdown-button">
                 <img src="{{ url_for('static', filename='images/chain.png') }}" alt="Vincular" id="icon">
                 <span>Vinculos</span>
             </a>                 
-            <a href="{{ url_for('dashboard') }}" class="nav-link">
+            <a href="{{ url_for('dashboard') }}" class="dropdown-button">
                 <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
                 <span>Arquivos</span>
             </a>
@@ -50,7 +50,7 @@
         <div class="form-wrapper">
             <div class="form-container">
                 <h2>Cadastrar Novo Contador</h2>
-                <form method="POST" action="{{ url_for('admin_page') }}">
+                <form method="POST" action="{{ url_for('admin_cadastros') }}">
                     <input type="hidden" name="form_type" value="contador">
                     
                     <label for="nome">Nome:</label>
@@ -76,7 +76,7 @@
 
             <div class="form-container">
                 <h2>Cadastrar Nova Empresa</h2>
-                <form method="POST" action="{{ url_for('admin_page') }}">
+                <form method="POST" action="{{ url_for('admin_cadastros') }}">
                     <input type="hidden" name="form_type" value="empresa">
                     
                     <label for="razao_social">Razão Social:</label>
