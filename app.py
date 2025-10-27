@@ -1,4 +1,8 @@
 from flask import Flask
+from flask_wtf import(
+    FlaskForm,
+    CSRFProtect
+)
 import re
 import os
 import os.path
@@ -12,9 +16,9 @@ from datetime import datetime
 load_dotenv()
 
 KEY_FLASK = os.getenv("KEY_FLASK")
-
 app = Flask(__name__)
 app.secret_key = KEY_FLASK
+csrf = CSRFProtect(app)
 
 #Função para formatar data
 @app.template_filter('format_datetime')

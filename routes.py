@@ -6,6 +6,16 @@ from app import app
 from flask import (
     render_template, request, redirect, url_for, session, g, flash, send_file, Response
 )
+from flask_wtf import(
+    FlaskForm,
+    CSRFProtect
+)
+from wtforms import(
+    StringField,
+    PasswordField,
+    SubmitField
+)
+from wtforms.validators import DataRequired
 from werkzeug.security import check_password_hash
 from googleapiclient.http import MediaIoBaseDownload
 from models import (
@@ -22,6 +32,11 @@ from googleapiclient.errors import HttpError
 
 DATABASE = 'usuarios.db'
 admin_email = os.getenv("ADMIN_EMAIL")
+
+class LoginForm(FlaskForm):
+    email = StringField('E-mail', validators=[DataRequired()])
+    password = PasswordField('Senha', validators=[DataRequired()])
+    submit = SubmitField('Entrar')
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -49,27 +64,30 @@ def login():
         return redirect(url_for('dashboard'))
 
     error = None
+    form = LoginForm()
     if request.method == 'POST':
-        email_form = request.form['email']
-        password_form = request.form['password']
-        
-        db = get_db()
-        user = db.execute(
-            'SELECT * FROM contador WHERE email = ?', (email_form,)
-        ).fetchone()
+        if form.validate_on_submit():
+            email_form = form.email.data
+            password_form =form.password.data
+            
+            db = get_db()
+            user = db.execute(
+                'SELECT * FROM contador WHERE email = ?', (email_form,)
+            ).fetchone()
 
-        if user is None:
-            error = 'E-mail não encontrado. Tente novamente.'
-        elif not check_password_hash(user['senha_hash'], password_form):
-            error = 'Senha incorreta.'
+            if user is None:
+                error = 'E-mail não encontrado. Tente novamente.'
+            elif not check_password_hash(user['senha_hash'], password_form):
+                error = 'Senha incorreta.'
+            else:
+                session.clear()
+                session['user_id'] = user['id']
+                session['user_name'] = user['nome']
+                session['user_email'] = user['email']
+                return redirect(url_for('dashboard'))
         else:
-            session.clear()
-            session['user_id'] = user['id']
-            session['user_name'] = user['nome']
-            session['user_email'] = user['email']
-            return redirect(url_for('dashboard'))
-
-    return render_template("login.html", error=error)
+            error = 'Por favor, preencha todos os campos.'
+    return render_template("login.html", error=error, form=form)
 
 @app.route("/dashboard")
 def dashboard():
