@@ -200,7 +200,7 @@ def dashboard():
 
 
 @app.route("/admin", methods=['GET', 'POST'])
-def admin_page():
+def admin_cadastros():
     if session.get('user_email') != admin_email:
         flash('Acesso não autorizado.', 'error')
         return redirect(url_for('dashboard'))
@@ -233,7 +233,7 @@ def admin_page():
                 flash(mensagem, 'success')
             else:
                 flash(mensagem, 'error')
-        return redirect(url_for('admin_page'))                
+        return redirect(url_for('admin_cadastros'))                
     db = get_db()
     contadores = db.execute("SELECT id, nome, email FROM contador ORDER BY nome").fetchall()
     empresas = db.execute("SELECT id, nome_fantasia, razao_social FROM empresa ORDER BY nome_fantasia").fetchall()                

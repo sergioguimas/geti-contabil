@@ -30,9 +30,9 @@
                         <span>Arquivos</span>
                     </a>
                     {% if is_admin %}
-                        <a href="{{ url_for('admin_page') }}" class="dropdown-item">
-                            <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Admin" id="icon">
-                            <span>Admin</span>
+                        <a href="{{ url_for('admin_cadastros') }}" class="dropdown-item">
+                            <img src="{{ url_for('static', filename='images/add.png') }}" alt="Admin" id="icon">
+                            <span>Cadastrar</span>
                         </a>
                         <a href="{{ url_for('admin_vinculos') }}" class="dropdown-item">
                              <img src="{{ url_for('static', filename='images/chain.png') }}" alt="Vínculos" id="icon">
