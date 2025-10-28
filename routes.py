@@ -391,7 +391,7 @@ def download_batch():
         )
 
         if download_token:
-            response.set_cookie(f"download_token_{download_token}", "true", max_age=30) 
+            response.set_cookie(f"download_token_{download_token}", "true", max_age=30 , secure= True, httponly= False) 
         
         return response
 

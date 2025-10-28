@@ -17,7 +17,7 @@ load_dotenv()
 
 KEY_FLASK = os.getenv("KEY_FLASK")
 app = Flask(__name__)
-app.secret_key = KEY_FLASK
+app.config['SECRET_KEY'] = KEY_FLASK
 csrf = CSRFProtect(app)
 
 #Função para formatar data
