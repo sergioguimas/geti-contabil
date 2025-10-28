@@ -77,6 +77,7 @@
                     <tbody>
                         {% for file in files %}
                             <form action="{{ url_for('salvar_vinculo') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <tr>
                                     <td>
                                         <a href="{{ file.webViewLink }}" target="_blank">{{ file.name }}</a><br>
