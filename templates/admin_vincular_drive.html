@@ -55,6 +55,7 @@
             <!-- Formulário de Busca -->
             <div class="form-container">
                 <form method="POST" action="{{ url_for('vincular_drive_page') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="text" name="nome_empresa_busca" placeholder="Digite o nome da empresa para buscar no Drive" size="50">
                     <button type="submit">Buscar Pastas</button>
                 </form>

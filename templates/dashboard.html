@@ -55,6 +55,7 @@
                 <h3>Empresas</h3>
                 <p align="center">Selecione uma empresa para ver os arquivos.</p>
                 <form action="{{ url_for('dashboard')}}" method="GET" id="empresa-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <select name="empresa_id" class="empresa-select" id="empresa-select-id">
                         <option value="">-- Selecione uma empresa --</option>
                         {% for empresa in empresas %}

@@ -58,7 +58,7 @@
             <div class="form-container">
                 <h2>Vincular ou Desvincular</h2>
                 <form method="POST" action="{{ url_for('admin_vinculos') }}">
-                    
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <label for="empresa_id">Selecione a Empresa:</label>
                     <select name="empresa_id" id="empresa_id" required>
                         <option value="">-- Selecione uma empresa --</option>
