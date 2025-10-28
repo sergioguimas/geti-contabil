@@ -23,6 +23,7 @@
                 <p style="color: red; text-align: center;">{{ error }}</p>
             {% endif %}            
             <form method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 {{form.hidden_tag()}}
                 {{form.email(placeholder="E-mail", required=True)}}<br><br>
                 {{form.password(placeholder="Senha", required=True)}}<br><br>
