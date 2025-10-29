@@ -12,6 +12,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import time
 load_dotenv()
 
 DATABASE = "usuarios.db"
@@ -420,12 +421,14 @@ def pesquisa_pasta_drive_razao_social(NOME_DRIVE):
     DRIVE_LIST = None
     try:
         SERVICE = get_drive_service()
+        time.sleep(10)
         CONSULTA_DRIVE = f"mimeType='application/vnd.google-apps.folder' and name contains '{NOME_DRIVE}' and trashed = false"
         RESULT  = SERVICE.files().list(
             q=CONSULTA_DRIVE,
             pageSize=100,
             fields="files(id, name, webViewLink, iconLink, mimeType)"
         ).execute()
+        time.sleep(5)
         DRIVE_LIST = RESULT.get('files', [])
         return (DRIVE_LIST)
     except HttpError as e:
@@ -440,10 +443,12 @@ def get_folder_details(ID_DRIVE):
     try:
         SERVICE = get_drive_service()
         # Pedimos 'id', 'name' e 'parents' (ID da pasta pai)
+        time.sleep(10)
         file_metadata = SERVICE.files().get(
             fileId=ID_DRIVE,
             fields="id, name, parents, webViewLink"
         ).execute()
+        time.sleep(2)
         return (True, file_metadata)
     except HttpError as e:
         print(f"ERRO AO OBTER DETALHES DA PASTA - LOG:{e}")
@@ -455,6 +460,7 @@ def pesquisa_pasta_drive_id_drive(ID_DRIVE, order_by_param="folder, name"):
     try:
         if ID_DRIVE:
             SERVICE = get_drive_service()
+            time.sleep(10) 
             CONSULTA_DRIVE = f"'{ID_DRIVE}' in parents and trashed = false"
             RESULTS = SERVICE.files().list(
                 q=CONSULTA_DRIVE,
@@ -463,7 +469,9 @@ def pesquisa_pasta_drive_id_drive(ID_DRIVE, order_by_param="folder, name"):
                 fields="files(id, name, webViewLink, iconLink, webContentLink, mimeType, createdTime, modifiedTime)"
                 
                 ).execute()
+            time.sleep(5)
             FILE_LIST = RESULTS.get("files", [])
+            time.sleep(5)
             return(True, FILE_LIST)
         else:
             return(True, [])
@@ -478,13 +486,13 @@ def pesquisa_pasta_drive_id_drive(ID_DRIVE, order_by_param="folder, name"):
 def get_file_download_request_and_name(ID_FILE):
     try:
         SERVICE = get_drive_service()
-        
+        time.sleep(5)
         # 1. Obter metadados (nome e mimeType)
         file_metadata = SERVICE.files().get(
             fileId=ID_FILE,
             fields="name, mimeType"
         ).execute()
-        
+        time.sleep(5)
         name = file_metadata.get('name')
         original_mime_type = file_metadata.get('mimeType')
 
@@ -512,10 +520,12 @@ def get_file_download_request_and_name(ID_FILE):
             return (True, request, name, original_mime_type)
 
         # 3. Se chegou aqui, é um tipo Google, então crie um request de EXPORT
+        time.sleep(5)
         request = SERVICE.files().export_media(
             fileId=ID_FILE,
             mimeType=export_mime
         )
+        time.sleep(5)
         return (True, request, download_name, export_mime)
         
     except HttpError as e:
