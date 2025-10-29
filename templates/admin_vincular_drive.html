@@ -13,6 +13,30 @@
             <a href="{{ url_for('dashboard') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo" >
             </a>
+            <img src="{{ url_for('static', filename='images/info.png') }}" alt="Info" class="header-icon" id="info-button" title="Instruções">
+            
+            <div id="info-popup" class="info-popup">
+                <h2>Drive</h2>
+                <p>Nessa pagina você consegue vincular a pasta do Google Drive a respectiva empresa.</p>
+                <hr>
+                <h4>Buscar Pasta:</h4>
+                <ul>
+                    <li>Selecione o nome da pasta (De acordo os arquivos no Google Drive).</li>
+                    <li>Clique no botão para buscar.</li>
+                </ul>
+                <hr>
+                <h4>Resultados de busca no Drive:</h4>
+                <ul>
+                    <li>Lista todas as pastas contendo o nome pesquisado.</li>
+                    <li>Ao clicar no nome da pasta será redirecionado para a mesma no Google Drive</li>
+                    <li>Use a caixa para determinar de qual empresa será aquela pasta.</li>
+                    <li>Clique no botão para Vincular (A partir desse momento, quando o contador acessar aquela empresa verá os arquivos dessa pasta)</li>
+                </ul>
+            </div>
+
+            <a href="https://wa.me/5533999956841" target="_blank" rel="noopener noreferrer">
+                <img src="{{ url_for('static', filename='images/whatsapp.png') }}" alt="Suporte" class="header-icon">
+            </a>
         </div>
 
         <div class="header-center">
@@ -69,11 +93,9 @@
                 <input type="text" name="nome_empresa_busca" placeholder="Digite o nome da empresa para buscar no Drive" size="50">
                 <button type="submit">Buscar Pastas</button>
             </form>
+            <br>
             <hr>
-        </div>
-
-        <!-- Seção de Resultados da Busca -->
-        <div class="form-container">
+            <br>
             {% if files %}
                 <h2 align="center">Resultados da Busca no Drive:</h2>
             {% endif %}

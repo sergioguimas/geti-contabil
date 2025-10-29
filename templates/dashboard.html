@@ -12,6 +12,25 @@
             <a href="{{ url_for('dashboard') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo" >
             </a>
+            <img src="{{ url_for('static', filename='images/info.png') }}" alt="Info" class="header-icon" id="info-button" title="Instruções">
+            
+            <div id="info-popup" class="info-popup">
+                <h2>Dashboard</h2>
+                <p>Nessa pagina você consegue acessar os arquivos da empresa em tempo real.</p>
+                <hr>
+                <h4>Menu Lateral:</h4>
+                <p>Selecione a empresa dentre as vinculadas ao seu usuário</p>
+                <hr>
+                <h4>Painel Principal:</h4>
+                <ul>
+                    <li>Clique no nome do arquivo para baixa-lo individualmente.</li>
+                    <li>Selecione a checkbox para baixar os arquivos compactador.</li>
+                    <li>Clique no cabeçalho para ordenar os arquivos por Nome (Ordem Alfabetica) ou Data (Mais recente primeiro).</li>
+                </ul>
+            </div>
+            <a href="https://wa.me/5533999956841" target="_blank" rel="noopener noreferrer">
+                <img src="{{ url_for('static', filename='images/whatsapp.png') }}" alt="Suporte" class="header-icon">
+            </a>
         </div>
         <div class="header-center">
             <h1>Bem-vindo(a), {{ username }}!</h1>
