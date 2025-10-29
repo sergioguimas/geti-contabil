@@ -93,20 +93,6 @@
                             {% endif %}
                         </h2>
                     </div>
-                    
-                    <div class="folder-nav-sort">
-                        <span>Ordenar por:</span>
-                        
-                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=current_folder.id if current_folder else '', sort='name') }}"
-                           class="sort-link {% if current_sort == 'name' %}active{% endif %}">
-                           Nome
-                        </a>
-                        
-                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=current_folder.id if current_folder else '', sort='date') }}"
-                           class="sort-link {% if current_sort == 'date' %}active{% endif %}">
-                           Data (Mais Recente)
-                        </a>
-                    </div>
                 </div> 
 
                 <form action="{{ url_for('download_batch') }}" method="POST" id="download-form">
@@ -118,9 +104,26 @@
                                     <th class="col-check">
                                         <input type="checkbox" id="select-all-checkbox" title="Selecionar Todos">
                                     </th>
-                                    <th class="col-name">Nome</th>
-                                    <th class="col-date">Modificado em</th>
-                                    <th class="col-type">Tipo</th>
+                                    
+                                    <th class="col-name">
+                                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=current_folder.id if current_folder else '', sort='name') }}" 
+                                           class="sort-link-header {% if current_sort == 'name' %}active{% endif %}">
+                                           Nome
+                                        </a>
+                                    </th>
+                                    
+                                    <th class="col-date">
+                                        <a href="{{ url_for('dashboard', empresa_id=empresa_id, folder_id=current_folder.id if current_folder else '', sort='date') }}" 
+                                           class="sort-link-header {% if current_sort == 'date' %}active{% endif %}">
+                                           Modificado em
+                                        </a>
+                                    </th>
+                                    
+                                    <th class="col-type">
+                                        <a>
+                                           Tipo
+                                        </a>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>

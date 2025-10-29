@@ -291,35 +291,25 @@ header {
     gap: 15px;
 }
 
-.folder-nav-sort {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.folder-nav-sort span {
-    font-size: 0.9em;
-    color: #555;
-}
-
-.sort-link {
+.sort-link-header {
     text-decoration: none;
-    color: #4f46e5;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-weight: 500;
-    font-size: 0.9em;
-    transition: background-color 0.2s;
-}
-
-.sort-link:hover {
-    background-color: #f0f2f5;
-}
-
-.sort-link.active {
-    background-color: #4f46e5;
     color: white;
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: background-color 0.2s;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.sort-link-header:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.sort-link-header.active {
     font-weight: bold;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
 }
 
 .file-table {
@@ -330,6 +320,11 @@ header {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     table-layout: fixed;
     overflow: auto;
+}
+
+.file-table th.col-check,
+.file-table th.col-type {
+    padding: 10px;
 }
 
 .file-table thead {
@@ -362,7 +357,6 @@ header {
 .file-table th {
     background-color: #4f46e5;
     color: white;
-    padding: 10px;
     border-bottom: 3px solid #000000;
 }
 
