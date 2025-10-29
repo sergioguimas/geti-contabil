@@ -12,11 +12,14 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 import time
 load_dotenv()
 
 DATABASE = "usuarios.db"
-SCOPES = ["https://www.googleapis.com/auth/drive"]
+SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
+SERVICE_ACCOUNT_FILE = os.path.join(os.path.dirname(__file__), 'token.json')
 admin_email = os.getenv("ADMIN_EMAIL")
 
 # COMEÇO -  FUNÇÕES AUXILIARES
@@ -400,21 +403,10 @@ def deletar_vinculo_empresa_contador(ID_CONTADOR, ID_EMPRESA):
 # CASO ESTEJA ELE JÁ VAI CRIAR NA ROOT O "token.json" QUE É A AUTH_KEY DO API E FUNCIONARÁ CORRETAMENTE
 #!!!!!!!!!!!!!!!COLOCA ESSES 2 JSON NO GIT IGNORE POR FAVOR, SE NÃO F, LITERALMENTE F, SÉRIO!!!!!!!!!!!!!!
 def get_drive_service():
-    CREDENCIAIS = None
-    if os.path.exists("token.json"):
-        CREDENCIAIS = Credentials.from_authorized_user_file("token.json", SCOPES)
-    if not CREDENCIAIS or not CREDENCIAIS.valid:
-        if CREDENCIAIS and CREDENCIAIS.expired and CREDENCIAIS.refresh_token:
-            CREDENCIAIS.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "credentials.json", SCOPES
-            )
-            CREDENCIAIS = flow.run_local_server(port=0)
-        
-        with open("token.json", "w") as token:
-            token.write(CREDENCIAIS.to_json())
-    return build("drive", "v3",  credentials=CREDENCIAIS)
+    creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('drive', 'v3', credentials=creds)
+    return service
 
 #PESQUISA PASTAS NO DRIVE PELA RAZÃO SOCIAL
 def pesquisa_pasta_drive_razao_social(NOME_DRIVE):

@@ -29,6 +29,8 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 DATABASE = 'usuarios.db'
 admin_email = os.getenv("ADMIN_EMAIL")
