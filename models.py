@@ -440,7 +440,6 @@ def get_folder_details(ID_DRIVE):
             fileId=ID_DRIVE,
             fields="id, name, parents, webViewLink"
         ).execute()
-        time.sleep(1)
         return (True, file_metadata)
     except HttpError as e:
         print(f"ERRO AO OBTER DETALHES DA PASTA - LOG:{e}")
@@ -463,7 +462,6 @@ def pesquisa_pasta_drive_id_drive(ID_DRIVE, order_by_param="folder, name"):
                 ).execute()
             time.sleep(1)
             FILE_LIST = RESULTS.get("files", [])
-            time.sleep(1)
             return(True, FILE_LIST)
         else:
             return(True, [])
@@ -484,7 +482,6 @@ def get_file_download_request_and_name(ID_FILE):
             fileId=ID_FILE,
             fields="name, mimeType"
         ).execute()
-        time.sleep(1)
         name = file_metadata.get('name')
         original_mime_type = file_metadata.get('mimeType')
 
@@ -517,7 +514,6 @@ def get_file_download_request_and_name(ID_FILE):
             fileId=ID_FILE,
             mimeType=export_mime
         )
-        time.sleep(1)
         return (True, request, download_name, export_mime)
         
     except HttpError as e:
