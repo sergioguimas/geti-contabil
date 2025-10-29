@@ -20,14 +20,29 @@
         </div>
 
         <div class="header-right">
-            <a href="{{ url_for('admin_vinculos') }}" class="dropdown-button">
-                <img src="{{ url_for('static', filename='images/chain.png') }}" alt="Vincular" id="icon">
-                <span>Vinculos</span>
-            </a>                 
             <a href="{{ url_for('dashboard') }}" class="dropdown-button">
                 <img src="{{ url_for('static', filename='images/folder.png') }}" alt="Dashboard" id="icon">
                 <span>Arquivos</span>
             </a>
+            <div class="dropdown">
+                <button class="dropdown-button" id="menu-button">
+                    <img src="{{ url_for('static', filename='images/settings.png') }}" alt="Menu" id="icon"> <span>Menu</span>
+                </button>
+                <div class="dropdown-content" id="menu-dropdown">
+                    <a href="{{ url_for('admin_cadastros') }}" class="dropdown-item">
+                        <img src="{{ url_for('static', filename='images/add.png') }}" alt="Admin" id="icon">
+                        <span>Cadastrar</span>
+                    </a>
+                    <a href="{{ url_for('admin_vinculos') }}" class="dropdown-item">
+                            <img src="{{ url_for('static', filename='images/chain.png') }}" alt="Vínculos" id="icon">
+                            <span>Vínculos</span>
+                        </a>
+                        <a href="{{ url_for('vincular_drive_page') }}" class="dropdown-item">
+                            <img src="{{ url_for('static', filename='images/drive.png') }}" alt="Drive" id="icon">
+                            <span>Drive</span>
+                        </a>
+                </div>
+            </div>
             <a href="{{ url_for('logout') }}" id="sair">
                 <img src="{{ url_for('static', filename='images/logout.png') }}" alt="Sair" id="icon">
                 <span>Sair</span>
@@ -128,7 +143,26 @@
           VMasker(contatoInput).maskPattern('(99) 99999-9999');
         }
 
-      });
+        });
+        //Script Menu Dropdown
+        const menuButton = document.getElementById('menu-button');
+        const menuDropdown = document.getElementById('menu-dropdown');
+
+        if (menuButton && menuDropdown) {
+            menuButton.addEventListener('click', function() {
+                // Alterna a classe 'show' no conteúdo do dropdown
+                menuDropdown.classList.toggle('show');
+            });
+
+            // Fecha o dropdown se clicar fora dele
+            window.addEventListener('click', function(event) {
+                if (!menuButton.contains(event.target) && !menuDropdown.contains(event.target)) {
+                    if (menuDropdown.classList.contains('show')) {
+                        menuDropdown.classList.remove('show');
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
