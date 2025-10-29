@@ -54,7 +54,7 @@
             <div class="info-empresas">
                 <h3>Empresas</h3>
                 <p align="center">Selecione uma empresa para ver os arquivos.</p>
-                <form action="{{ url_for('dashboard')}}" method="GET" id="empresa-form">
+                <form action="{{ url_for('dashboard')}}" method="POST" id="empresa-form">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <select name="empresa_id" class="empresa-select" id="empresa-select-id">
                         <option value="">-- Selecione uma empresa --</option>
@@ -64,7 +64,6 @@
                             </option>
                         {% endfor %}
                     </select>
-                    <button type="submit" style="display: none;">Ver Arquivos</button>
                 </form>
             </div>
             <div class="info-contador">
@@ -136,7 +135,6 @@
                                                     value="{{ file.id }}" 
                                                     id="file-{{ file.id }}"
                                                     class="file-checkbox">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         {% endif %}
                                     </td>
                                     
