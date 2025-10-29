@@ -92,7 +92,16 @@
 .table {
     width: 100%;
     margin-top: 20px;
+    overflow: auto;
+    max-height: 45vh;
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
 
+.table table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
 .table td {
@@ -102,15 +111,15 @@
 }
 
 .table td:nth-child(1) {
-    border-radius: 7px 0 0 7px;
+    border-radius: 8px 0 0 8px;
 }
 
 .table td:nth-child(2) {
-    border-radius: 0 7px 7px 0;
+    border-radius: 0 8px 8px 0;
 }
 
 .table td:nth-child(3) {
-    border-radius: 7px;
+    border-radius: 8px;
 }
 
 .table th {
@@ -120,18 +129,29 @@
     padding: 10px;
     outline-offset: 3px;
     border-bottom: 3px solid #000000;  
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 .table th:nth-child(1) {
-    border-radius: 7px 0 0 7px;
-}
-
-.table th:nth-child(2) {
-    border-radius: 0 7px 7px 0;
+    border-radius: 7px 0 0 0px;
 }
 
 .table th:nth-child(3) {
-    border-radius: 7px;
+    border-radius: 0px 7px 0px 0px;
+}
+
+.table tr:nth-child(odd) {
+    background-color: #dadada;
+}
+
+.table tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.table tbody tr:hover {
+    background-color: #a2c4ff;
 }
 
 .table button{

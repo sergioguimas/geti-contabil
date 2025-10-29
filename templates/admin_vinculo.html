@@ -100,54 +100,35 @@
             <div class="form-container">
                 <h2>Empresas e Seus Vínculos</h2>
                 
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Empresa</th>
-                            <th>Contador Vinculado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for empresa in empresas_vinculadas %}
-                        <tr>
-                            <td>
-                                {{ empresa.nome_fantasia or empresa.razao_social }}
-                            </td>
-                            <td>
-                                {% if empresa.contador_nome %}
-                                    {{ empresa.contador_nome }} ({{ empresa.contador_email }})
-                                {% else %}
-                                    <span style="color: #888;">Nenhum contador vinculado</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Empresa</th>
+                                <th>Contador Vinculado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for empresa in empresas_vinculadas %}
+                            <tr>
+                                <td>
+                                    {{ empresa.nome_fantasia or empresa.razao_social }}
+                                </td>
+                                <td>
+                                    {% if empresa.contador_nome %}
+                                        {{ empresa.contador_nome }} ({{ empresa.contador_email }})
+                                    {% else %}
+                                        <span style="color: #888;">Nenhum contador vinculado</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>                
             </div>
         </div>
     </div>
-    <script>
-        //Script Menu Dropdown
-        const menuButton = document.getElementById('menu-button');
-        const menuDropdown = document.getElementById('menu-dropdown');
-
-        if (menuButton && menuDropdown) {
-            menuButton.addEventListener('click', function() {
-                // Alterna a classe 'show' no conteúdo do dropdown
-                menuDropdown.classList.toggle('show');
-            });
-
-            // Fecha o dropdown se clicar fora dele
-            window.addEventListener('click', function(event) {
-                if (!menuButton.contains(event.target) && !menuDropdown.contains(event.target)) {
-                    if (menuDropdown.classList.contains('show')) {
-                        menuDropdown.classList.remove('show');
-                    }
-                }
-            });
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

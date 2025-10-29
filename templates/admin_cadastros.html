@@ -130,39 +130,6 @@
     </div>
 
     <script src="https://unpkg.com/vanilla-masker@1.1.1/build/vanilla-masker.min.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        
-        var cnpjInput = document.getElementById('cnpj');
-        if(cnpjInput) {
-          VMasker(cnpjInput).maskPattern('99.999.999/9999-99');
-        }
-
-        var contatoInput = document.getElementById('contato');
-        if(contatoInput) {
-          VMasker(contatoInput).maskPattern('(99) 99999-9999');
-        }
-
-        });
-        //Script Menu Dropdown
-        const menuButton = document.getElementById('menu-button');
-        const menuDropdown = document.getElementById('menu-dropdown');
-
-        if (menuButton && menuDropdown) {
-            menuButton.addEventListener('click', function() {
-                // Alterna a classe 'show' no conteúdo do dropdown
-                menuDropdown.classList.toggle('show');
-            });
-
-            // Fecha o dropdown se clicar fora dele
-            window.addEventListener('click', function(event) {
-                if (!menuButton.contains(event.target) && !menuDropdown.contains(event.target)) {
-                    if (menuDropdown.classList.contains('show')) {
-                        menuDropdown.classList.remove('show');
-                    }
-                }
-            });
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
