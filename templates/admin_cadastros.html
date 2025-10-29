@@ -13,6 +13,32 @@
             <a href="{{ url_for('dashboard') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo" >
             </a>
+            <img src="{{ url_for('static', filename='images/info.png') }}" alt="Info" class="header-icon" id="info-button" title="Instruções">
+            
+            <div id="info-popup" class="info-popup">
+                <h2>Cadastrar</h2>
+                <p>Nessa pagina você consegue cadastrar contadores e empresas.</p>
+                <hr>
+                <h4>Cadastrar novo contador:</h4>
+                <ul>
+                    <li>Campos de Nome, Email e Senha Obrigatórios</li>
+                    <li>Caso já tenha a empresa cadastrada, pode selecionar para fazer o vinculo direto</li>
+                    <li>Selecionar o "Admin" como empresa deixará o contador sem nenhuma empresa visível</li>
+                    <li>O email e a senha serão usados pelo contador para fazer o login no portal.</li>
+                </ul>
+                <hr>
+                <h4>Cadastrar nova empresa:</h4>
+                <ul>
+                    <li>Campos de: Razão Social, Nome Fantasia, CNPJ, Email e Contato obrigatórios.</li>
+                    <li>ID do Drive pode ser adicionado no cadastro caso já tenha a pasta criada ou adicionado posteriormente</li>
+                    <li>Selecione o "ADM" como contador fará com que nenhum contador consiga ver a empresa.</li>
+                    <li>A empresa não tem login no portal, Email e Telefone são apenas para contato</li>
+                </ul>
+            </div>
+
+            <a href="https://wa.me/5533999956841" target="_blank" rel="noopener noreferrer">
+                <img src="{{ url_for('static', filename='images/whatsapp.png') }}" alt="Suporte" class="header-icon">
+            </a>
         </div>
 
         <div class="header-center">
@@ -126,7 +152,6 @@
                 </form>
             </div>
         </div>
-
     </div>
 
     <script src="https://unpkg.com/vanilla-masker@1.1.1/build/vanilla-masker.min.js"></script>

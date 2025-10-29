@@ -116,4 +116,33 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
 
+    // --- SCRIPT DO POP-UP DE INFO ---
+    const infoButton = document.getElementById('info-button');
+    const infoPopup = document.getElementById('info-popup');
+
+    if (infoButton && infoPopup) {
+        
+        // 1. Abrir/Fechar ao clicar no ÍCONE
+        infoButton.addEventListener('click', function(event) {
+            // Impede que o clique se propague para o 'window' e feche o pop-up imediatamente
+            event.stopPropagation(); 
+            // Alterna a classe .show
+            infoPopup.classList.toggle('show');
+        });
+
+        // 2. Fechar ao clicar em QUALQUER LUGAR FORA
+        window.addEventListener('click', function(event) {
+            // Se o pop-up está visível E o clique NÃO foi dentro dele
+            if (infoPopup.classList.contains('show') && !infoPopup.contains(event.target)) 
+            {
+                infoPopup.classList.remove('show');
+            }
+        });
+
+        // 3. (Opcional) Impede que cliques DENTRO do pop-up o fechem
+        infoPopup.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    }
+
 });

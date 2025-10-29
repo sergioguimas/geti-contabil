@@ -14,6 +14,29 @@
             <a href="{{ url_for('dashboard') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" id="logo" >
             </a>
+            <img src="{{ url_for('static', filename='images/info.png') }}" alt="Info" class="header-icon" id="info-button" title="Instruções">
+            
+            <div id="info-popup" class="info-popup">
+                <h2>Vínculos</h2>
+                <p>Nessa pagina você consegue gerenciar os vinculos entre contador e empresa.</p>
+                <hr>
+                <h4>Vincular/Desvincular:</h4>
+                <ul>
+                    <li>Selecione o nome fantasia da empresa.</li>
+                    <li>Selecione o nome do contador.</li>
+                    <li>Clique no botão para vincular (Caso não sejam) ou desvincular (Caso já sejam).</li>
+                </ul>
+                <hr>
+                <h4>Empresa e seus vínculos:</h4>
+                <ul>
+                    <li>Relaciona todas as empresas cadastradas e seus respectivos contadores.</li>
+                    <li>Apenas os contadores listados conseguem visualizar os arquivos daquela empresa.</li>
+                </ul>
+            </div>
+            
+            <a href="https://wa.me/5533999956841" target="_blank" rel="noopener noreferrer">
+                <img src="{{ url_for('static', filename='images/whatsapp.png') }}" alt="Suporte" class="header-icon">
+            </a>
         </div>
 
         <div class="header-center">
@@ -62,8 +85,6 @@
                 </div>
             {% endif %}
         {% endwith %}
-
-        <h2 align="center">Gerenciar Vínculos</h2>
 
         <div class="form-wrapper">            
             <div class="form-container">
