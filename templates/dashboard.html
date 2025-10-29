@@ -133,6 +133,7 @@
                                                     value="{{ file.id }}" 
                                                     id="file-{{ file.id }}"
                                                     class="file-checkbox">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         {% endif %}
                                     </td>
                                     
