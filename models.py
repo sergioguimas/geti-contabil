@@ -421,14 +421,14 @@ def pesquisa_pasta_drive_razao_social(NOME_DRIVE):
     DRIVE_LIST = None
     try:
         SERVICE = get_drive_service()
-        time.sleep(2)
+        time.sleep(1)
         CONSULTA_DRIVE = f"mimeType='application/vnd.google-apps.folder' and name contains '{NOME_DRIVE}' and trashed = false"
         RESULT  = SERVICE.files().list(
             q=CONSULTA_DRIVE,
             pageSize=100,
             fields="files(id, name, webViewLink, iconLink, mimeType)"
         ).execute()
-        time.sleep(2)
+        time.sleep(1)
         DRIVE_LIST = RESULT.get('files', [])
         return (DRIVE_LIST)
     except HttpError as e:
@@ -443,12 +443,12 @@ def get_folder_details(ID_DRIVE):
     try:
         SERVICE = get_drive_service()
         # Pedimos 'id', 'name' e 'parents' (ID da pasta pai)
-        time.sleep(2)
+        time.sleep(1)
         file_metadata = SERVICE.files().get(
             fileId=ID_DRIVE,
             fields="id, name, parents, webViewLink"
         ).execute()
-        time.sleep(2)
+        time.sleep(1)
         return (True, file_metadata)
     except HttpError as e:
         print(f"ERRO AO OBTER DETALHES DA PASTA - LOG:{e}")
@@ -460,7 +460,7 @@ def pesquisa_pasta_drive_id_drive(ID_DRIVE, order_by_param="folder, name"):
     try:
         if ID_DRIVE:
             SERVICE = get_drive_service()
-            time.sleep(2) 
+            time.sleep(1) 
             CONSULTA_DRIVE = f"'{ID_DRIVE}' in parents and trashed = false"
             RESULTS = SERVICE.files().list(
                 q=CONSULTA_DRIVE,
@@ -486,13 +486,13 @@ def pesquisa_pasta_drive_id_drive(ID_DRIVE, order_by_param="folder, name"):
 def get_file_download_request_and_name(ID_FILE):
     try:
         SERVICE = get_drive_service()
-        time.sleep(2)
+        time.sleep(1)
         # 1. Obter metadados (nome e mimeType)
         file_metadata = SERVICE.files().get(
             fileId=ID_FILE,
             fields="name, mimeType"
         ).execute()
-        time.sleep(2)
+        time.sleep(1)
         name = file_metadata.get('name')
         original_mime_type = file_metadata.get('mimeType')
 
